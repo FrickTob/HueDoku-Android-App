@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Hue-Doku</string>
+    <string name="playButtonText">Play</string>
+    <string name="settingsContentDescription">Settings</string>
+
+
+    <!-- Color Input Buttons -->
+    <string name="color1Description">Color One</string>
+    <string name="color2Description">Color Two</string>
+    <string name="color3Description">Color Three</string>
+    <string name="color4Description">Color Four</string>
+    <string name="color5Description">Color Five</string>
+    <string name="color6Description">Color Six</string>
+    <string name="color7Description">Color Seven</string>
+    <string name="color8Description">Color Eight</string>
+    <string name="color9Description">Color Nine</string>
+
+    <string name="eraseButtonDescription">Erase</string>
+    <string name="notesButtonDescription">Notes</string>
+
+    <string name="beginnerDifficultyTitle">Beginner</string>
+    <string name="intermediateDifficultyTitle">Intermediate</string>
+    <string name="advancedDifficultyTitle">Advanced</string>
+    <string name="expertDifficultyTitle">Expert</string>
+    <string name="insanityDifficultyTitle">Insanity</string>
+
+</resources>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GameActivity">
+
+    <TextView
+        android:id="@+id/timerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00"
+        android:textSize="24sp"
+        android:paddingLeft="32px"
+        android:layout_above="@id/sudokuBoard"
+        android:layout_alignLeft="@id/sudokuBoard"/>
+
+    <TextView
+        android:id="@+id/mistakesText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:text="Mistakes: 0/3"
+        android:paddingRight="32px"
+        android:layout_above="@id/sudokuBoard"
+        android:layout_alignRight="@id/sudokuBoard"/>
+    <com.example.hue_doku.view.custom.SudokuBoardView
+        android:id="@+id/sudokuBoard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/buttonsLayout" />
+
+    <GridLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:columnCount="3"
+        android:rowCount="4"
+        android:useDefaultMargins="true"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:id="@+id/oneButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/sudokuDefault1"
+            android:contentDescription="@string/color1Description"
+            android:layout_row="1"
+            android:layout_column="0" />
+
+        <Button
+            android:id="@+id/twoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/sudokuDefault2"
+            android:contentDescription="@string/color2Description"
+            android:layout_row="1"
+            android:layout_column="1"/>
+
+        <Button
+            android:id="@+id/threeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/sudokuDefault3"
+            android:contentDescription="@string/color3Description"
+            android:layout_row="1"
+            android:layout_column="2"/>
+
+        <Button
+            android:id="@+id/fourButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/sudokuDefault4"
+            android:contentDescription="@string/color4Description"
+            android:layout_row="2"
+            android:layout_column="0"/>
+
+        <Button
+            android:id="@+id/fiveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/sudokuDefault5"
+            android:contentDescription="@string/color5Description"
+            android:layout_row="2"
+            android:layout_column="1"/>
+
+        <Button
+            android:id="@+id/sixButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/sudokuDefault6"
+            android:contentDescription="@string/color6Description"
+            android:layout_row="2"
+            android:layout_column="2"/>
+
+        <Button
+            android:id="@+id/sevenButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/sudokuDefault7"
+            android:contentDescription="@string/color7Description"
+            android:layout_row="3"
+            android:layout_column="0"/>
+
+        <Button
+            android:id="@+id/eightButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/sudokuDefault8"
+            android:contentDescription="@string/color8Description"
+            android:layout_row="3"
+            android:layout_column="1"/>
+
+        <Button
+            android:id="@+id/nineButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/sudokuDefault9"
+            android:contentDescription="@string/color9Description"
+            android:layout_row="3"
+            android:layout_column="2"/>
+
+        <ImageButton
+            android:id="@+id/notesButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/notesButtonDescription"
+            android:src="@drawable/notespen"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_gravity="center" />
+
+        <ImageButton
+            android:id="@+id/eraseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/erase"
+            android:layout_row="0"
+            android:layout_column="2"
+            android:layout_gravity="center"
+            android:contentDescription="@string/eraseButtonDescription"/>
+    </GridLayout>
+
+</RelativeLayout>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+
+
+    <!-- -->
+    <color name="sudokuDefault1">#40A4D8</color>
+    <color name="sudokuDefault2">#33BEB8</color>
+    <color name="sudokuDefault3">#B2C225</color>
+    <color name="sudokuDefault4">#FECC2F</color>
+    <color name="sudokuDefault5">#F9A228</color>
+    <color name="sudokuDefault6">#F6621F</color>
+    <color name="sudokuDefault7">#DB3838</color>
+    <color name="sudokuDefault8">#EE657A</color>
+    <color name="sudokuDefault9">#A363D9</color>
+
+</resources>
