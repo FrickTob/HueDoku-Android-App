@@ -1,5 +1,8 @@
 package com.example.hue_doku.game;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Pair;
 
 import androidx.lifecycle.MutableLiveData;
@@ -10,6 +13,7 @@ import com.example.hue_doku.generation.TerminalPattern;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.prefs.PreferenceChangeEvent;
 
 public class SudokuGame {
 
@@ -28,29 +32,44 @@ public class SudokuGame {
     private int numCorrect = 0;
     private int numMistakes = 0;
 
+    String continueBoard;
+    String completeBoard;
 
-
-    public SudokuGame(int difficulty) {
+    public SudokuGame(int difficulty, Context appContext) {
+        if(difficulty == 6) {
+            System.out.println("Continuing!");
+        }
         Cell[][] cells = new Cell[9][9];
         int[][] startingVals;
-        do {
-            solvedGrid = TerminalPattern.createPattern();
-            startingVals = GeneratingAlgorithm.deepCopy(solvedGrid);
-            startingVals = GeneratingAlgorithm.generatePuzzle(startingVals, difficulty);
+        if(difficulty == 6) {
+            SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(appContext);
+            String inProgressString = prefs.getString("inProgressBoard", "");
+            String completeString = prefs.getString("completeBoard", "");
+            System.out.println("In Progress String: " + inProgressString);
+            prefs.edit().remove("inProgressBoard").apply();
+            prefs.edit().remove("completeBoard").apply();
+            solvedGrid = stringToGrid(completeString);
+            startingVals = stringToGrid(inProgressString);
         }
-        while (startingVals[0][0] == -1);
-        for(int row = 0; row < 9; row++)
-            for (int col = 0; col < 9; col++){
-                cells[row][col] = new Cell(row, col, startingVals[row][col]);
-                if(cells[row][col].getValue() != 0) {
-                    cells[row][col].toggleStartingCell();
-                    cells[row][col].toggleCorrectCell();
-                    numCorrect++;
-                }
+        else {
+            do {
+                solvedGrid = TerminalPattern.createPattern();
+                startingVals = GeneratingAlgorithm.deepCopy(solvedGrid);
+                startingVals = GeneratingAlgorithm.generatePuzzle(startingVals, difficulty);
             }
-
+            while (startingVals[0][0] == -1);
+        }
+            for (int row = 0; row < 9; row++)
+                for (int col = 0; col < 9; col++) {
+                    cells[row][col] = new Cell(row, col, startingVals[row][col]);
+                    if (cells[row][col].getValue() != 0) {
+                        cells[row][col].toggleStartingCell();
+                        cells[row][col].toggleCorrectCell();
+                        numCorrect++;
+                    }
+                }
         board = new Board(9, cells);
-            numCorrectLiveData.postValue(numCorrect);
+        numCorrectLiveData.postValue(numCorrect);
         selectedCellLiveData.postValue(new Pair(selectedRow,selectedCol));
         cellsLiveData.postValue(board.cells);
         isTakingNotesLiveData.postValue(isTakingNotes);
@@ -132,4 +151,15 @@ public class SudokuGame {
 
     public int[][] getSolvedGrid() {return solvedGrid;}
 
+    public int[][] stringToGrid(String string) {
+        int charToIntOffset = 48;
+        int[][] grid = new int[9][9];
+        for(int i = 0; i < 81; i++) {
+            int row = (i) / 9;
+            int col = (i) % 9;
+            grid[row][col] = string.charAt(i)  - charToIntOffset;
+        }
+        return grid;
+
+    }
 }

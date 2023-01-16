@@ -238,8 +238,6 @@ public class SudokuBoardView extends View {
                             (cell.getRow() + 1) * cellSizePixels,
                             thickLinePaint);
                 }
-
-
     }
     @Override
     public boolean onTouchEvent(MotionEvent event) {

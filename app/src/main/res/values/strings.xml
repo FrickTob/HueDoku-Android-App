@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Hue-Doku</string>
     <string name="playButtonText">Play</string>
+    <string name="continueButtonText">Continue</string>
     <string name="settingsContentDescription">Settings</string>
 
 
