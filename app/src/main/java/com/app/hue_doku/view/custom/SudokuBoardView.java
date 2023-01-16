@@ -1,4 +1,4 @@
-package com.example.hue_doku.view.custom;
+package com.app.hue_doku.view.custom;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -12,8 +12,8 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
-import com.example.hue_doku.R;
-import com.example.hue_doku.game.Cell;
+import com.app.hue_doku.R;
+import com.app.hue_doku.game.Cell;
 
 import java.util.HashSet;
 

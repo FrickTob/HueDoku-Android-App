@@ -1,9 +1,8 @@
-package com.example.hue_doku;
+package com.app.hue_doku;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,8 +10,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
-
-import java.util.prefs.PreferenceChangeEvent;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,13 +38,17 @@ public class MainActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String inProgressBoard = prefs.getString("inProgressBoard", "");
 
-        System.out.println(inProgressBoard);
-
+        final Button continueButton = findViewById(R.id.continueButton);
+        continueButton.setVisibility(View.GONE);
         if(!inProgressBoard.equals("")) {
-            final Button continueButton = findViewById(R.id.continueButton);
             continueButton.setVisibility(View.VISIBLE);
             continueButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -59,5 +60,4 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-
 }

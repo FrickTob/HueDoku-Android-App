@@ -24,7 +24,7 @@
         android:paddingRight="32px"
         android:layout_above="@id/sudokuBoard"
         android:layout_alignRight="@id/sudokuBoard"/>
-    <com.example.hue_doku.view.custom.SudokuBoardView
+    <com.app.hue_doku.view.custom.SudokuBoardView
         android:id="@+id/sudokuBoard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

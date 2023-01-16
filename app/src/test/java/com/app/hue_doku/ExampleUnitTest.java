@@ -1,4 +1,4 @@
-package com.example.hue_doku;
+package com.app.hue_doku;
 
 import org.junit.Test;
 

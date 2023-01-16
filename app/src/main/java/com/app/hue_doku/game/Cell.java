@@ -1,8 +1,6 @@
-package com.example.hue_doku.game;
+package com.app.hue_doku.game;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 public class Cell {
     private int row;

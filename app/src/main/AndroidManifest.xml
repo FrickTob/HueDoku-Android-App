@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.hue_doku">
+    package="com.app.hue_doku">
 
     <application
         android:allowBackup="true"
@@ -14,11 +14,11 @@
         android:theme="@style/Theme.HueDoku"
         tools:targetApi="31">
         <activity
-            android:name=".GameActivity"
+            android:name="com.app.hue_doku.GameActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".MainActivity"
+            android:name="com.app.hue_doku.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>

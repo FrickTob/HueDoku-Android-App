@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/hue_doku/generation/BacktrackingAlgorithm.java" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/hue_doku/generation/BoardState.java" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/hue_doku/generation/DatabaseManagement.java" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/hue_doku/generation/GeneratingAlgorithm.java" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/hue_doku/generation/TerminalPattern.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/hue_doku/generation/BacktrackingAlgorithm.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/hue_doku/generation/BoardState.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/hue_doku/generation/DatabaseManagement.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/hue_doku/generation/GeneratingAlgorithm.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/app/hue_doku/generation/TerminalPattern.java" charset="windows-1252" />
   </component>
 </project>

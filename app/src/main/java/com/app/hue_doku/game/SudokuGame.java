@@ -1,4 +1,4 @@
-package com.example.hue_doku.game;
+package com.app.hue_doku.game;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,13 +7,10 @@ import android.util.Pair;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.hue_doku.generation.GeneratingAlgorithm;
-import com.example.hue_doku.generation.TerminalPattern;
+import com.app.hue_doku.generation.GeneratingAlgorithm;
+import com.app.hue_doku.generation.TerminalPattern;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.prefs.PreferenceChangeEvent;
 
 public class SudokuGame {
 
@@ -36,20 +33,18 @@ public class SudokuGame {
     String completeBoard;
 
     public SudokuGame(int difficulty, Context appContext) {
-        if(difficulty == 6) {
-            System.out.println("Continuing!");
-        }
         Cell[][] cells = new Cell[9][9];
         int[][] startingVals;
+        numMistakesLiveData.postValue(0);
         if(difficulty == 6) {
             SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(appContext);
             String inProgressString = prefs.getString("inProgressBoard", "");
             String completeString = prefs.getString("completeBoard", "");
             System.out.println("In Progress String: " + inProgressString);
-            prefs.edit().remove("inProgressBoard").apply();
-            prefs.edit().remove("completeBoard").apply();
             solvedGrid = stringToGrid(completeString);
             startingVals = stringToGrid(inProgressString);
+            numMistakes = prefs.getInt("Mistakes", 0);
+            numMistakesLiveData.postValue(numMistakes);
         }
         else {
             do {

@@ -1,4 +1,4 @@
-package com.example.hue_doku;
+package com.app.hue_doku;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -18,19 +18,20 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.hue_doku.game.Cell;
-import com.example.hue_doku.view.custom.SudokuBoardView;
-import com.example.hue_doku.viewmodel.MyViewModelFactory;
-import com.example.hue_doku.viewmodel.SudokuViewModel;
+import com.app.hue_doku.game.Cell;
+import com.app.hue_doku.view.custom.SudokuBoardView;
+import com.app.hue_doku.viewmodel.MyViewModelFactory;
+import com.app.hue_doku.viewmodel.SudokuViewModel;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameActivity extends AppCompatActivity implements SudokuBoardView.OnTouchListener , View.OnClickListener {
 
     private SudokuViewModel viewModel;
-    private Button[] buttons = new Button[9];
+    private final Button[] buttons = new Button[9];
     private ImageButton notesButton;
     private ImageButton eraseButton;
     Integer difficulty = 1;
@@ -45,7 +46,7 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
     String timeKey = "";
 
     boolean isContinuedGame = false;
-    boolean isComplete = false;
+    boolean isComplete;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +58,6 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
             time = Double.longBitsToDouble(prefs.getLong("time", prefs.getLong("time", 0L)));
             isContinuedGame=true;
         }
-        System.out.println(prefs.getInt("Difficulty", 10));
         prefs.edit().remove("Difficulty").apply();
         switch (difficulty) {
             case 1: timeKey = "BeginnerTime";
@@ -70,7 +70,6 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
             break;
             case 5: timeKey = "InsaneTime";
             break;
-            default: ;
         }
         bestTime = prefs.getString(timeKey, "00:00");
 
@@ -96,19 +95,11 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
 
 
         for(Button button : buttons)
-            button.setOnClickListener(this::onClick);
+            button.setOnClickListener(this);
 
-        notesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                viewModel.game.toggleTakingNotes();
-            }
-        });
+        notesButton.setOnClickListener(view -> viewModel.game.toggleTakingNotes());
 
-        eraseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {viewModel.game.delete();}
-        });
+        eraseButton.setOnClickListener(view -> viewModel.game.delete());
 
         SudokuBoardView boardView = findViewById(R.id.sudokuBoard);
         boardView.registerListener(this);
@@ -144,7 +135,6 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
         viewModel.game.numCorrectLiveData.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer numCorrect) {
-                System.out.println(numCorrect);
                 if(numCorrect == numCells)
                     triggerGameComplete();
             }
@@ -155,6 +145,7 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
 
     private void triggerGameComplete() {
         timeString =(String) timerText.getText();
+        isComplete = true;
         timerTask.cancel();
         AlertDialog.Builder dialog = new AlertDialog.Builder(GameActivity.this);
         String newBest = "";
@@ -203,6 +194,7 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
     public void triggerGameOver() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(GameActivity.this);
         isComplete = true;
+        dialog.setTitle("Game Over!");
         dialog.setPositiveButton("New Game", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -317,6 +309,7 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
     protected void onStart() {
         super.onStart();
         startTimer();
+        isComplete = false;
     }
     public void startTimer() {
         if(timerText == null) return;
@@ -338,46 +331,50 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
         int timeRound = (int) Math.round(time);
         int seconds = ((timeRound % 86400) % 3600) % 60;
         int minutes = ((timeRound % 86400) % 3600) / 60;
-        return String.format("%02d", minutes) + ":" + String.format("%02d",seconds);
+        return String.format(Locale.ENGLISH, "%02d", minutes) + ":" + String.format(Locale.ENGLISH, "%02d",seconds);
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        System.out.println("Stopping: Complete? " + isComplete);
         if(isComplete) {
             prefs.edit().remove("inProgressBoard").apply();
             prefs.edit().remove("completeBoard").apply();
             prefs.edit().remove("Difficulty").apply();
             prefs.edit().remove("time").apply();
-            return;
+            prefs.edit().remove("Mistakes").apply();
         }
-        String inProgressString = gridToString(viewModel.game.cellsLiveData.getValue());
-        String completeInProgressString = gridToString(viewModel.game.getSolvedGrid());
+        else {
+            String inProgressString = gridToString(viewModel.game.cellsLiveData.getValue());
+            String completeInProgressString = gridToString(viewModel.game.getSolvedGrid());
 
 
-        prefs.edit().putString("inProgressBoard", inProgressString).apply();
-        prefs.edit().putString("completeBoard", completeInProgressString).apply();
-        prefs.edit().putInt("Difficulty", difficulty).apply();
-        prefs.edit().putLong("time", Double.doubleToRawLongBits(time)).apply();
+            prefs.edit().putString("inProgressBoard", inProgressString).apply();
+            prefs.edit().putString("completeBoard", completeInProgressString).apply();
+            prefs.edit().putInt("Difficulty", difficulty).apply();
+            prefs.edit().putLong("time", Double.doubleToRawLongBits(time)).apply();
+            prefs.edit().putInt("Mistakes", viewModel.game.numMistakesLiveData.getValue()).apply();
+        }
     }
 
     public String gridToString(int[][] grid) {
-        String gridString = "";
+        StringBuilder gridString = new StringBuilder();
         for(int[] gridRow : grid) {
             for (int val : gridRow)
-                gridString += val;
+                gridString.append(val);
         }
 
-        return gridString;
+        return gridString.toString();
     }
     public String gridToString(Cell[][] grid) {
-        String gridString = "";
+        StringBuilder gridString = new StringBuilder();
         for(Cell[] cellRow : grid) {
             for (Cell cell : cellRow)
-                gridString += cell.getValue();
+                gridString.append(cell.getValue());
         }
 
-        return gridString;
+        return gridString.toString();
     }
 }

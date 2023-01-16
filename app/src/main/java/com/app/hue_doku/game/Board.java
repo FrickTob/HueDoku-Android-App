@@ -1,6 +1,4 @@
-package com.example.hue_doku.game;
-
-import java.util.ArrayList;
+package com.app.hue_doku.game;
 
 public class Board {
     int size;
