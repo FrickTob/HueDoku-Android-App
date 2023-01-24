@@ -23,6 +23,7 @@ import com.app.hue_doku.view.custom.SudokuBoardView;
 import com.app.hue_doku.viewmodel.MyViewModelFactory;
 import com.app.hue_doku.viewmodel.SudokuViewModel;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Timer;
@@ -36,14 +37,17 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
     private ImageButton eraseButton;
     Integer difficulty = 1;
 
+    TextView difficultyTitle;
     TextView timerText;
     Timer timer;
     TimerTask timerTask;
     Double time = 0.0;
     String timeString;
 
-    String bestTime = "00:00";
+    String bestTime;
     String timeKey = "";
+
+    int colorPaletteSelection;
 
     boolean isContinuedGame = false;
     boolean isComplete;
@@ -52,6 +56,7 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
         super.onCreate(savedInstanceState);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
+        colorPaletteSelection = prefs.getInt("ColorPalette", 1);
         difficulty = getIntent().getIntExtra("Difficulty", 1);
         if(difficulty == 6) {
             difficulty = prefs.getInt("Difficulty", 1);
@@ -59,23 +64,32 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
             isContinuedGame=true;
         }
         prefs.edit().remove("Difficulty").apply();
+        String titleText = "";
         switch (difficulty) {
             case 1: timeKey = "BeginnerTime";
+            titleText = "Beginner";
             break;
             case 2: timeKey = "IntermediateTime";
+                titleText = "Intermediate";
             break;
             case 3: timeKey = "AdvancedTime";
+                titleText = "Advanced";
             break;
             case 4: timeKey = "ExpertTime";
+                titleText = "Expert";
             break;
             case 5: timeKey = "InsaneTime";
+                titleText = "Insane";
             break;
         }
-        bestTime = prefs.getString(timeKey, "00:00");
+        bestTime = prefs.getString(timeKey, "No Previous Times");
 
         setContentView(R.layout.activity_game);
 
         timerText = findViewById(R.id.timerText);
+        difficultyTitle = findViewById(R.id.difficultyTitle);
+
+        difficultyTitle.setText(titleText);
 
         timer = new Timer();
 
@@ -94,8 +108,11 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
 
 
 
-        for(Button button : buttons)
-            button.setOnClickListener(this);
+        for(int i = 0; i < 9; i++) {
+            buttons[i].setOnClickListener(this);
+            buttons[i].setBackgroundColor(getButtonColor(colorPaletteSelection, i));
+        }
+
 
         notesButton.setOnClickListener(view -> viewModel.game.toggleTakingNotes());
 
@@ -130,9 +147,13 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
                 else updateNumMistakes(numMistakes);
             }
         });
+        viewModel.game.correctNumsLiveData.observe(this, new Observer<Integer[]>() {
+            @Override
+            public void onChanged(Integer[] integers) {updateCompletedKeysUI(integers);}
+        });
 
         int numCells = 81;
-        viewModel.game.numCorrectLiveData.observe(this, new Observer<Integer>() {
+        viewModel.game.totalNumCorrectLiveData.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer numCorrect) {
                 if(numCorrect == numCells)
@@ -154,13 +175,14 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
             newBest = " New Best Time!";
         }
         dialog.setTitle("Congratulations! Game Complete");
-        dialog.setMessage("Time: " + timeString + "Previous Best: " + bestTime + newBest);
+        dialog.setMessage("Time: " + timeString + "\nPrevious Best: " + bestTime + "\n" +newBest);
         dialog.setPositiveButton("New Game", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent intent = new Intent(getBaseContext(), GameActivity.class);
                 intent.putExtra("Difficulty", difficulty);
                 startActivity(intent);
+                finish();
             }
         });
         dialog.setNegativeButton("Home", new DialogInterface.OnClickListener() {
@@ -173,7 +195,7 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
         dialog.show();
     }
     private boolean betterTime() {
-        if(bestTime.equals("00:00")) return true;
+        if(bestTime.equals("No Previous Times")) return true;
         if(timeString.charAt(0) < bestTime.charAt(0))
             return true;
         else if(timeString.charAt(0) == bestTime.charAt(0)) {
@@ -201,6 +223,7 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
                 Intent intent = new Intent(getBaseContext(), GameActivity.class);
                 intent.putExtra("Difficulty", difficulty);
                 startActivity(intent);
+                finish();
             }
         });
         dialog.setNegativeButton("Home", new DialogInterface.OnClickListener() {
@@ -227,12 +250,22 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
     }
 
     private void updateHighlightedKeysUI(HashSet<Integer> notes) {
+        Integer[] totalEachNum = viewModel.game.correctNumsLiveData.getValue();
         if(notes == null) return;
         for(int i = 0; i < 9; i++)
-            if(notes.contains(i+1))
+            if(notes.contains(i+1) || totalEachNum[i] >= 9)
                 buttons[i].setBackgroundColor(Color.DKGRAY);
             else
-                buttons[i].setBackgroundColor(getDefaultButtonColor(i));
+                buttons[i].setBackgroundColor(getButtonColor(colorPaletteSelection, i));
+    }
+
+    private void updateCompletedKeysUI(Integer[] totals) {
+        if(totals == null) return;
+        for(int i = 0; i < 9; i++)
+            if(totals[i] >= 9)
+                buttons[i].setBackgroundColor(Color.DKGRAY);
+            else
+                buttons[i].setBackgroundColor(getButtonColor(colorPaletteSelection, i));
     }
 
     private void updateNumMistakes(int numMistakes) {
@@ -241,19 +274,54 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
     }
 
 
-    public int getDefaultButtonColor(int i) {
-
-        switch (i) {
-            case 0: return getResources().getColor(R.color.sudokuDefault1);
-            case 1: return getResources().getColor(R.color.sudokuDefault2);
-            case 2: return getResources().getColor(R.color.sudokuDefault3);
-            case 3: return getResources().getColor(R.color.sudokuDefault4);
-            case 4: return getResources().getColor(R.color.sudokuDefault5);
-            case 5: return getResources().getColor(R.color.sudokuDefault6);
-            case 6: return getResources().getColor(R.color.sudokuDefault7);
-            case 7: return getResources().getColor(R.color.sudokuDefault8);
-            case 8: return getResources().getColor(R.color.sudokuDefault9);
-            default: return -1;
+    public int getButtonColor(int selectedPalette, int i) {
+        if(selectedPalette == 2) {
+            switch (i) {
+                case 0:
+                    return getResources().getColor(R.color.sudokuAlt11);
+                case 1:
+                    return getResources().getColor(R.color.sudokuAlt12);
+                case 2:
+                    return getResources().getColor(R.color.sudokuAlt13);
+                case 3:
+                    return getResources().getColor(R.color.sudokuAlt14);
+                case 4:
+                    return getResources().getColor(R.color.sudokuAlt15);
+                case 5:
+                    return getResources().getColor(R.color.sudokuAlt16);
+                case 6:
+                    return getResources().getColor(R.color.sudokuAlt17);
+                case 7:
+                    return getResources().getColor(R.color.sudokuAlt18);
+                case 8:
+                    return getResources().getColor(R.color.sudokuAlt19);
+                default:
+                    return -1;
+            }
+        }
+        else {
+            switch (i) {
+                case 0:
+                    return getResources().getColor(R.color.sudokuDefault1);
+                case 1:
+                    return getResources().getColor(R.color.sudokuDefault2);
+                case 2:
+                    return getResources().getColor(R.color.sudokuDefault3);
+                case 3:
+                    return getResources().getColor(R.color.sudokuDefault4);
+                case 4:
+                    return getResources().getColor(R.color.sudokuDefault5);
+                case 5:
+                    return getResources().getColor(R.color.sudokuDefault6);
+                case 6:
+                    return getResources().getColor(R.color.sudokuDefault7);
+                case 7:
+                    return getResources().getColor(R.color.sudokuDefault8);
+                case 8:
+                    return getResources().getColor(R.color.sudokuDefault9);
+                default:
+                    return -1;
+            }
         }
 
     }
@@ -355,7 +423,8 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
             prefs.edit().putString("completeBoard", completeInProgressString).apply();
             prefs.edit().putInt("Difficulty", difficulty).apply();
             prefs.edit().putLong("time", Double.doubleToRawLongBits(time)).apply();
-            prefs.edit().putInt("Mistakes", viewModel.game.numMistakesLiveData.getValue()).apply();
+            if(viewModel.game.numMistakesLiveData.getValue() != null)
+                prefs.edit().putInt("Mistakes", viewModel.game.numMistakesLiveData.getValue()).apply();
         }
     }
 
@@ -377,4 +446,5 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
 
         return gridString.toString();
     }
+
 }

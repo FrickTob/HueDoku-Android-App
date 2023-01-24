@@ -6,48 +6,52 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/app_name"
-        android:textSize="20pt"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Button
         android:id="@+id/homePlayButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent=".70"
         android:text="@string/playButtonText"
-        app:layout_constraintBottom_toTopOf="@+id/homeSettingsButton"
+        android:layout_marginBottom="64dp"
+        app:layout_constraintBottom_toTopOf="@+id/customizeButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/appTitle" />
 
     <ImageButton
-        android:id="@+id/homeSettingsButton"
-        android:layout_width="wrap_content"
+        android:id="@+id/customizeButton"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent=".30"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/settingsContentDescription"
-        android:backgroundTint="@color/purple_500"
         android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/purple_500"
+        android:contentDescription="@string/settingsContentDescription"
+        android:minHeight="48dp"
+        android:src="@drawable/paintbrush"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_manage" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/continueButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent=".70"
         android:text="@string/continueButtonText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/homePlayButton"
         android:visibility="gone"
         tools:layout_editor_absoluteY="405dp" />
+
+    <ImageView
+        android:id="@+id/appTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/huedoku_logo_text_resized"
+        android:layout_marginTop="64dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.app.hue_doku.generation.GeneratingAlgorithm;
 import com.app.hue_doku.generation.TerminalPattern;
 
+import java.util.Arrays;
 import java.util.HashSet;
 
 public class SudokuGame {
@@ -18,7 +19,8 @@ public class SudokuGame {
     public MutableLiveData<Cell[][]> cellsLiveData = new MutableLiveData<>();
     public MutableLiveData<Boolean> isTakingNotesLiveData = new MutableLiveData<>();
     public MutableLiveData<HashSet<Integer>> activeNotesLiveData = new MutableLiveData<>();
-    public MutableLiveData<Integer> numCorrectLiveData = new MutableLiveData<>();
+    public MutableLiveData<Integer> totalNumCorrectLiveData = new MutableLiveData<>();
+    public MutableLiveData<Integer[]> correctNumsLiveData= new MutableLiveData<>();
     public MutableLiveData<Integer> numMistakesLiveData = new MutableLiveData<>();
 
     private int selectedRow = -1;
@@ -27,6 +29,7 @@ public class SudokuGame {
     private int[][] solvedGrid;
     private Board board;
     private int numCorrect = 0;
+    private Integer[] correctNums;
     private int numMistakes = 0;
 
     String continueBoard;
@@ -35,7 +38,10 @@ public class SudokuGame {
     public SudokuGame(int difficulty, Context appContext) {
         Cell[][] cells = new Cell[9][9];
         int[][] startingVals;
-        numMistakesLiveData.postValue(0);
+        correctNums = new Integer[9];
+        for(int i = 0; i < 9; i++)
+            correctNums[i] = 0;
+
         if(difficulty == 6) {
             SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(appContext);
             String inProgressString = prefs.getString("inProgressBoard", "");
@@ -44,7 +50,6 @@ public class SudokuGame {
             solvedGrid = stringToGrid(completeString);
             startingVals = stringToGrid(inProgressString);
             numMistakes = prefs.getInt("Mistakes", 0);
-            numMistakesLiveData.postValue(numMistakes);
         }
         else {
             do {
@@ -61,18 +66,23 @@ public class SudokuGame {
                         cells[row][col].toggleStartingCell();
                         cells[row][col].toggleCorrectCell();
                         numCorrect++;
+                        correctNums[cells[row][col].getValue() - 1]++;
                     }
                 }
         board = new Board(9, cells);
-        numCorrectLiveData.postValue(numCorrect);
+
+        totalNumCorrectLiveData.postValue(numCorrect);
+        correctNumsLiveData.postValue(correctNums);
         selectedCellLiveData.postValue(new Pair(selectedRow,selectedCol));
         cellsLiveData.postValue(board.cells);
         isTakingNotesLiveData.postValue(isTakingNotes);
+        numMistakesLiveData.postValue(numMistakes);
     }
 
     public void handleInput(int num) {
         if(selectedRow == -1 || selectedCol == -1) return;
         if(board.cells[selectedRow][selectedCol].isStartingCell()) return;
+        if(board.cells[selectedRow][selectedCol].isCorrectCell()) return;
         Cell selectedCell = board.getCell(selectedRow, selectedCol);
 
         if(isTakingNotes && selectedCell.getValue() == 0) {
@@ -89,19 +99,17 @@ public class SudokuGame {
             selectedCell.setValue(num);
             selectedCell.setColor(num - 1);
             selectedCell.clearNotes();
-            if(num != solvedGrid[selectedRow][selectedCol]) {
+            if(num != solvedGrid[selectedRow][selectedCol]) { // incorrect
                 numMistakes++;
                 numMistakesLiveData.postValue(numMistakes);
             }
-            else if(selectedCell.getValue() == solvedGrid[selectedRow][selectedCol]) {
+            else { // correct
                 numCorrect++;
+                correctNums[selectedCell.getValue() - 1]++;
                 selectedCell.toggleCorrectCell();
             }
-            else {
-                numCorrect--;
-                selectedCell.toggleCorrectCell();
-            }
-            numCorrectLiveData.postValue(numCorrect);
+            totalNumCorrectLiveData.postValue(numCorrect);
+            correctNumsLiveData.postValue(correctNums);
 
         }
         cellsLiveData.postValue(board.cells);

@@ -8,19 +8,19 @@ import androidx.lifecycle.ViewModelProvider;
 
     public class MyViewModelFactory implements ViewModelProvider.Factory {
         private Application mApplication;
-        private int mParam;
-        private Context mParam2;
+        private int difficulty;
+        private Context appContext;
 
 
         public MyViewModelFactory(Application application, int param, Context context) {
             mApplication = application;
-            mParam = param;
-            mParam2 = context;
+            difficulty = param;
+            appContext = context;
         }
 
 
         @Override
         public <T extends ViewModel> T create(Class<T> modelClass) {
-            return (T) new SudokuViewModel(mApplication, mParam, mParam2);
+            return (T) new SudokuViewModel(mApplication, difficulty, appContext);
         }
     }

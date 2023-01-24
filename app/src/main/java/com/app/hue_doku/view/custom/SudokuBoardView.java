@@ -1,11 +1,13 @@
 package com.app.hue_doku.view.custom;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,6 +18,7 @@ import com.app.hue_doku.R;
 import com.app.hue_doku.game.Cell;
 
 import java.util.HashSet;
+import java.util.prefs.Preferences;
 
 public class SudokuBoardView extends View {
     private Paint thickLinePaint;
@@ -34,6 +37,7 @@ public class SudokuBoardView extends View {
     // set in OnDraw method
     private float cellSizePixels = 0f;
     private float noteSizePixels = 0f;
+    private float borderOffset = 0f;
 
     private int selectedRow = -1;
     private int selectedCol = -1;
@@ -43,9 +47,13 @@ public class SudokuBoardView extends View {
     private Cell[][] cells = null;
     private int[][] correctValues = null;
 
+    private int selectedColorPalette = 1;
+
     public SudokuBoardView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        selectedColorPalette = prefs.getInt("ColorPalette", 1);
         // Set up paints
         thickLinePaint = new Paint();
         thickLinePaint.setColor(Color.BLACK);
@@ -68,6 +76,7 @@ public class SudokuBoardView extends View {
         textPaint = new Paint();
         textPaint.setColor(Color.BLACK);
         textPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        textPaint.setFakeBoldText(true);
 
         incorrectValTextPaint = new Paint();
         incorrectValTextPaint.setColor(Color.RED);
@@ -86,31 +95,31 @@ public class SudokuBoardView extends View {
         Resources res = getContext().getResources();
         colorPaints[0] = new Paint();
         colorPaints[0].setStyle(Paint.Style.FILL_AND_STROKE);
-        colorPaints[0].setColor(res.getColor(R.color.sudokuDefault1));
+        colorPaints[0].setColor(getColor(selectedColorPalette, 0));
         colorPaints[1] = new Paint();
         colorPaints[1].setStyle(Paint.Style.FILL_AND_STROKE);
-        colorPaints[1].setColor(res.getColor(R.color.sudokuDefault2));
+        colorPaints[1].setColor(getColor(selectedColorPalette, 1));
         colorPaints[2] = new Paint();
         colorPaints[2].setStyle(Paint.Style.FILL_AND_STROKE);
-        colorPaints[2].setColor(res.getColor(R.color.sudokuDefault3));
+        colorPaints[2].setColor(getColor(selectedColorPalette, 2));
         colorPaints[3] = new Paint();
         colorPaints[3].setStyle(Paint.Style.FILL_AND_STROKE);
-        colorPaints[3].setColor(res.getColor(R.color.sudokuDefault4));
+        colorPaints[3].setColor(getColor(selectedColorPalette, 3));
         colorPaints[4] = new Paint();
         colorPaints[4].setStyle(Paint.Style.FILL_AND_STROKE);
-        colorPaints[4].setColor(res.getColor(R.color.sudokuDefault5));
+        colorPaints[4].setColor(getColor(selectedColorPalette, 4));
         colorPaints[5] = new Paint();
         colorPaints[5].setStyle(Paint.Style.FILL_AND_STROKE);
-        colorPaints[5].setColor(res.getColor(R.color.sudokuDefault6));
+        colorPaints[5].setColor(getColor(selectedColorPalette, 5));
         colorPaints[6] = new Paint();
         colorPaints[6].setStyle(Paint.Style.FILL_AND_STROKE);
-        colorPaints[6].setColor(res.getColor(R.color.sudokuDefault7));
+        colorPaints[6].setColor(getColor(selectedColorPalette, 6));
         colorPaints[7] = new Paint();
         colorPaints[7].setStyle(Paint.Style.FILL_AND_STROKE);
-        colorPaints[7].setColor(res.getColor(R.color.sudokuDefault8));
+        colorPaints[7].setColor(getColor(selectedColorPalette, 7));
         colorPaints[8] = new Paint();
         colorPaints[8].setStyle(Paint.Style.FILL_AND_STROKE);
-        colorPaints[8].setColor(res.getColor(R.color.sudokuDefault9));
+        colorPaints[8].setColor(getColor(selectedColorPalette, 8));
     }
 
     @Override
@@ -131,12 +140,13 @@ public class SudokuBoardView extends View {
         // Draw all nums and lines
         cellSizePixels = canvas.getWidth() / size;
         fillCells(canvas);
+        drawNotes(canvas);
         drawLines(canvas);
-        drawText(canvas);
     }
     private void updateMeasurements(float width) {
         cellSizePixels = (width / size);
         noteSizePixels = cellSizePixels / sqrtSize;
+        borderOffset = 4f;
         noteTextPaint.setTextSize(cellSizePixels / sqrtSize);
         textPaint.setTextSize(cellSizePixels / 1.5F);
         incorrectValTextPaint.setTextSize(cellSizePixels / 1.5F);
@@ -161,7 +171,6 @@ public class SudokuBoardView extends View {
     private void fillCells(Canvas canvas) {
         if(cells == null) return;
 
-
         for(Cell[] cellRow : cells)
             for(Cell cell : cellRow) {
                 int row = cell.getRow();
@@ -184,7 +193,7 @@ public class SudokuBoardView extends View {
         canvas.drawRect( col*cellSizePixels, row*cellSizePixels,(col+1)*cellSizePixels, (row+1)*cellSizePixels, paint);
     }
 
-    private void drawText(Canvas canvas) {
+    private void drawNotes(Canvas canvas) {
         if (cells == null) return;
         for(Cell[] cellRow: cells)
             for(Cell cell : cellRow) {
@@ -192,8 +201,7 @@ public class SudokuBoardView extends View {
                 int col = cell.getCol();
                 int cellVal = cell.getValue();
                 Rect textBounds = new Rect();
-                if(cellVal == 0) {
-                    // draw notes
+                if(cellVal == 0) { // draw notes
                     HashSet<Integer> notes = cell.getNotes();
                     if(notes == null) return;
                     for(Integer note : notes) {
@@ -203,27 +211,19 @@ public class SudokuBoardView extends View {
                         noteTextPaint.getTextBounds(valueString, 0, valueString.length(), textBounds);
                         float textWidth = noteTextPaint.measureText(valueString);
                         float textHeight = textBounds.height();
-
-                        canvas.drawText(valueString,
-                                (col * cellSizePixels) + (colInCell * noteSizePixels) + (noteSizePixels / 2F) - (textWidth / 2),
-                                (row * cellSizePixels) + (rowInCell * noteSizePixels) + (noteSizePixels / 2F) + (textHeight / 2), noteTextPaint);
+                        canvas.drawCircle((col* cellSizePixels) + (colInCell * noteSizePixels) + (noteSizePixels / 2), (row * cellSizePixels) + (rowInCell * noteSizePixels) + (noteSizePixels / 2), noteSizePixels / 2.5F, colorPaints[note - 1]);
                     }
                 }
-                else {
-                    // draw number
-                        String valueString = cell.getValue() + "";
-                        Paint paintToUse = textPaint;
-                        if(correctValues != null) {
-                            paintToUse = cell.getValue() == correctValues[row][col] ? textPaint : incorrectValTextPaint;
-                        }
-                        paintToUse.getTextBounds(valueString, 0, valueString.length(), textBounds);
-                        float textWidth = paintToUse.measureText(valueString);
-                        float textHeight = textBounds.height();
-                        canvas.drawText(valueString,
-                                (col * cellSizePixels) + cellSizePixels / 2 - textWidth / 2,
-                                (row * cellSizePixels) + cellSizePixels / 2 + textHeight / 2, paintToUse);
-                    }
+                else if(cell.getValue() != correctValues[row][col]) { // draw x for incorrect answer
+                    String xString = "X";
+                    textPaint.getTextBounds(xString, 0, xString.length(), textBounds);
+                    float textWidth = textPaint.measureText(xString);
+                    float textHeight = textBounds.height();
+                    canvas.drawText(xString,
+                            (col * cellSizePixels) + cellSizePixels / 2 - textWidth / 2,
+                            (row * cellSizePixels) + cellSizePixels / 2 + textHeight / 2, textPaint);
                 }
+            }
 
     }
 
@@ -273,5 +273,36 @@ public class SudokuBoardView extends View {
     public void registerListener(OnTouchListener listener) {this.listener = listener;}
     public interface OnTouchListener {
         public void onCellTouched(int row, int col);
+    }
+
+    public int getColor(int paletteNum, int index) {
+        Resources res = getContext().getResources();
+        if(paletteNum == 2) { // alt colors 1
+            switch(index) {
+                case 0: return res.getColor(R.color.sudokuAlt11);
+                case 1: return res.getColor(R.color.sudokuAlt12);
+                case 2: return res.getColor(R.color.sudokuAlt13);
+                case 3: return res.getColor(R.color.sudokuAlt14);
+                case 4: return res.getColor(R.color.sudokuAlt15);
+                case 5: return res.getColor(R.color.sudokuAlt16);
+                case 6: return res.getColor(R.color.sudokuAlt17);
+                case 7: return res.getColor(R.color.sudokuAlt18);
+                case 8: return res.getColor(R.color.sudokuAlt19);
+            }
+        }
+        else { // default colors
+            switch(index) {
+                case 0: return res.getColor(R.color.sudokuDefault1);
+                case 1: return res.getColor(R.color.sudokuDefault2);
+                case 2: return res.getColor(R.color.sudokuDefault3);
+                case 3: return res.getColor(R.color.sudokuDefault4);
+                case 4: return res.getColor(R.color.sudokuDefault5);
+                case 5: return res.getColor(R.color.sudokuDefault6);
+                case 6: return res.getColor(R.color.sudokuDefault7);
+                case 7: return res.getColor(R.color.sudokuDefault8);
+                case 8: return res.getColor(R.color.sudokuDefault9);
+            }
+        }
+        return -1;
     }
 }

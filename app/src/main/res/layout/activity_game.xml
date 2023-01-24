@@ -4,26 +4,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".GameActivity">
-
+    <TextView
+        android:id="@+id/difficultyTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:textSize="32sp" />
     <TextView
         android:id="@+id/timerText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="00:00"
+        android:text="@string/timeStartingText"
         android:textSize="24sp"
-        android:paddingLeft="32px"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
         android:layout_above="@id/sudokuBoard"
-        android:layout_alignLeft="@id/sudokuBoard"/>
+        android:layout_alignStart="@id/sudokuBoard"/>
 
     <TextView
         android:id="@+id/mistakesText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="24sp"
-        android:text="Mistakes: 0/3"
-        android:paddingRight="32px"
+        android:text="@string/mistakesStartingText"
+        android:paddingEnd="32dp"
+        android:paddingStart="32dp"
         android:layout_above="@id/sudokuBoard"
-        android:layout_alignRight="@id/sudokuBoard"/>
+        android:layout_alignEnd="@id/sudokuBoard"/>
+
     <com.app.hue_doku.view.custom.SudokuBoardView
         android:id="@+id/sudokuBoard"
         android:layout_width="match_parent"
@@ -125,6 +135,7 @@
             android:id="@+id/notesButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minHeight="48dp"
             android:contentDescription="@string/notesButtonDescription"
             android:src="@drawable/notespen"
             android:layout_row="0"
@@ -135,6 +146,7 @@
             android:id="@+id/eraseButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minHeight="48dp"
             android:src="@drawable/erase"
             android:layout_row="0"
             android:layout_column="2"

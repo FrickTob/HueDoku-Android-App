@@ -4,11 +4,17 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/tobyf/AndroidStudioProjects/HueDoku/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2265" />
+        <entry key="..\:/Users/tobyf/AndroidStudioProjects/HueDoku/app/src/main/res/drawable/border.xml" value="0.1" />
+        <entry key="..\:/Users/tobyf/AndroidStudioProjects/HueDoku/app/src/main/res/drawable/close.xml" value="0.1275" />
         <entry key="..\:/Users/tobyf/AndroidStudioProjects/HueDoku/app/src/main/res/drawable/erase.xml" value="0.1" />
         <entry key="..\:/Users/tobyf/AndroidStudioProjects/HueDoku/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2265" />
-        <entry key="..\:/Users/tobyf/AndroidStudioProjects/HueDoku/app/src/main/res/layout/activity_game.xml" value="0.2" />
-        <entry key="..\:/Users/tobyf/AndroidStudioProjects/HueDoku/app/src/main/res/layout/activity_main.xml" value="0.2359375" />
+        <entry key="..\:/Users/tobyf/AndroidStudioProjects/HueDoku/app/src/main/res/drawable/paintbrush.xml" value="0.1275" />
+        <entry key="..\:/Users/tobyf/AndroidStudioProjects/HueDoku/app/src/main/res/drawable/popupbackground.xml" value="0.1" />
+        <entry key="..\:/Users/tobyf/AndroidStudioProjects/HueDoku/app/src/main/res/drawable/selectedboxborder.xml" value="0.1" />
+        <entry key="..\:/Users/tobyf/AndroidStudioProjects/HueDoku/app/src/main/res/layout/activity_game.xml" value="0.1" />
+        <entry key="..\:/Users/tobyf/AndroidStudioProjects/HueDoku/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/tobyf/AndroidStudioProjects/HueDoku/app/src/main/res/layout/difficulty_pop_up.xml" value="0.14351851851851852" />
+        <entry key="..\:/Users/tobyf/AndroidStudioProjects/HueDoku/app/src/main/res/layout/popup_customize.xml" value="0.1" />
         <entry key="..\:/Users/tobyf/AndroidStudioProjects/HueDoku/app/src/main/res/menu/difficulty_pop_up.xml" value="0.264" />
       </map>
     </option>

@@ -6,10 +6,18 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +46,17 @@ public class MainActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
+
+
+        final ImageButton customizeButton = findViewById(R.id.customizeButton);
+        customizeButton.setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+        customizeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("Clicked!");
+                createCustomizePopUp(view);
+            }
+        });
     }
 
     @Override
@@ -58,6 +77,48 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+        }
+    }
+    private void createCustomizePopUp(View view) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        final View popUpView = getLayoutInflater().inflate(R.layout.popup_customize, null);
+        dialogBuilder.setView(popUpView);
+        AlertDialog dialog = dialogBuilder.create();
+        dialog.show();
+
+        ImageButton closeButton = popUpView.findViewById(R.id.customizePopupCloseButton);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        RelativeLayout defaultColorBox = popUpView.findViewById(R.id.defaultPaletteBox);
+        defaultColorBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                prefs.edit().putInt("ColorPalette", 1).apply();
+            }
+        });
+
+        RelativeLayout altColorBox1 = popUpView.findViewById(R.id.altPaletteBox1);
+        altColorBox1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                prefs.edit().putInt("ColorPalette", 2).apply();
+            }
+        });
+        if(prefs.getInt("ColorPalette", 1) == 2) {
+            altColorBox1.setBackground(getResources().getDrawable(R.drawable.selectedboxborder));
+            defaultColorBox.setBackground(getResources().getDrawable(R.drawable.border));
+        }
+        else {
+            altColorBox1.setBackground(getResources().getDrawable(R.drawable.border));
+            defaultColorBox.setBackground(getResources().getDrawable(R.drawable.selectedboxborder));
         }
     }
 }

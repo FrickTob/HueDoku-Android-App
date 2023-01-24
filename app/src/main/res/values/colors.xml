@@ -7,18 +7,41 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray">#99999999</color>
 
 
 
-    <!-- -->
+    <!-- <color name="sudokuDefault7">#DB3838</color>
+    <color name="sudokuDefault8">#EE657A</color>-->
     <color name="sudokuDefault1">#40A4D8</color>
     <color name="sudokuDefault2">#33BEB8</color>
     <color name="sudokuDefault3">#B2C225</color>
     <color name="sudokuDefault4">#FECC2F</color>
     <color name="sudokuDefault5">#F9A228</color>
     <color name="sudokuDefault6">#F6621F</color>
-    <color name="sudokuDefault7">#DB3838</color>
-    <color name="sudokuDefault8">#EE657A</color>
+    <color name="sudokuDefault7">#c21717</color>
+    <color name="sudokuDefault8">#de5267</color>
     <color name="sudokuDefault9">#A363D9</color>
+
+    <color name="sudokuAlt11">#800000</color>
+    <color name="sudokuAlt12">#fabed4</color>
+    <color name="sudokuAlt13">#f58231</color>
+    <color name="sudokuAlt14">#ffe119</color>
+    <color name="sudokuAlt15">#3cb44b</color>
+    <color name="sudokuAlt16">#42d4f4</color>
+    <color name="sudokuAlt17">#000075</color>
+    <color name="sudokuAlt18">#8f00ff</color>
+    <color name="sudokuAlt19">#f032e6</color>
+
+    <color name="sudokuAlt21"></color>
+    <color name="sudokuAlt22"></color>
+    <color name="sudokuAlt23"></color>
+    <color name="sudokuAlt24"></color>
+    <color name="sudokuAlt25"></color>
+    <color name="sudokuAlt26"></color>
+    <color name="sudokuAlt27"></color>
+    <color name="sudokuAlt28"></color>
+    <color name="sudokuAlt29"></color>
+
 
 </resources>
