@@ -8,9 +8,8 @@
         android:id="@+id/difficultyTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
+        android:layout_above="@id/timerText"
         android:textSize="32sp" />
     <TextView
         android:id="@+id/timerText"
@@ -18,8 +17,8 @@
         android:layout_height="wrap_content"
         android:text="@string/timeStartingText"
         android:textSize="24sp"
-        android:paddingStart="32dp"
-        android:paddingEnd="32dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="0dp"
         android:layout_above="@id/sudokuBoard"
         android:layout_alignStart="@id/sudokuBoard"/>
 
@@ -29,8 +28,8 @@
         android:layout_height="wrap_content"
         android:textSize="24sp"
         android:text="@string/mistakesStartingText"
-        android:paddingEnd="32dp"
-        android:paddingStart="32dp"
+        android:paddingEnd="24dp"
+        android:paddingStart="0dp"
         android:layout_above="@id/sudokuBoard"
         android:layout_alignEnd="@id/sudokuBoard"/>
 
@@ -38,7 +37,8 @@
         android:id="@+id/sudokuBoard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/buttonsLayout" />
+        android:layout_above="@id/buttonsLayout"
+        />
 
     <GridLayout
         android:id="@+id/buttonsLayout"
@@ -135,10 +135,10 @@
             android:id="@+id/notesButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"
             android:contentDescription="@string/notesButtonDescription"
             android:src="@drawable/notespen"
             android:layout_row="0"
+            android:minHeight="48dp"
             android:layout_column="0"
             android:layout_gravity="center" />
 
@@ -146,9 +146,9 @@
             android:id="@+id/eraseButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"
             android:src="@drawable/erase"
             android:layout_row="0"
+            android:minHeight="48dp"
             android:layout_column="2"
             android:layout_gravity="center"
             android:contentDescription="@string/eraseButtonDescription"/>

@@ -10,13 +10,10 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,7 +21,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        if(displayMetrics.widthPixels >= 1200) // tablet
+            setContentView(R.layout.activity_main_tablet);
+        else // phone
+            setContentView(R.layout.activity_main_phone);
         String[] difficulties = {"Beginner",
                 "Intermediate",
                 "Advanced",

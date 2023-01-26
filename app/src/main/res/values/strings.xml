@@ -22,6 +22,7 @@
 
     <string name="eraseButtonDescription">Erase</string>
     <string name="notesButtonDescription">Notes</string>
+    <string name="customizeButtonDescription">Customize</string>
 
     <string name="beginnerDifficultyTitle">Beginner</string>
     <string name="intermediateDifficultyTitle">Intermediate</string>

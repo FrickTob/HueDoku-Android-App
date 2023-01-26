@@ -20,6 +20,10 @@ import com.app.hue_doku.game.Cell;
 import java.util.HashSet;
 import java.util.prefs.Preferences;
 
+/**
+ * Custom view to display sudoku board to users
+ * @author tobyf
+ */
 public class SudokuBoardView extends View {
     private Paint thickLinePaint;
     private Paint thinLinePaint;
@@ -143,6 +147,12 @@ public class SudokuBoardView extends View {
         drawNotes(canvas);
         drawLines(canvas);
     }
+
+    /**
+     * Based on the width of the view (which is the same as the height as this view is always square,
+     * set measurements so that drawing functions work effectively
+     * @param width the current width of the view
+     */
     private void updateMeasurements(float width) {
         cellSizePixels = (width / size);
         noteSizePixels = cellSizePixels / sqrtSize;
@@ -152,6 +162,10 @@ public class SudokuBoardView extends View {
         incorrectValTextPaint.setTextSize(cellSizePixels / 1.5F);
     }
 
+    /**
+     * Draw the lines dividing the sudoku grid
+     * @param canvas the canvas on which to draw the grid
+     */
     private void drawLines(Canvas canvas) {
         canvas.drawRect(0f,0f, canvas.getWidth(), canvas.getHeight(),thickLinePaint);
 
@@ -168,6 +182,11 @@ public class SudokuBoardView extends View {
             }
         }
     }
+
+    /**
+     * Fill the cells with correct colors
+     * @param canvas the canvas on which to fill in the cells
+     */
     private void fillCells(Canvas canvas) {
         if(cells == null) return;
 
@@ -189,10 +208,16 @@ public class SudokuBoardView extends View {
                     fillCell(canvas, row, col, conflictingCellPaint);
             }
     }
+
     private void fillCell(Canvas canvas, int row, int col, Paint paint) {
         canvas.drawRect( col*cellSizePixels, row*cellSizePixels,(col+1)*cellSizePixels, (row+1)*cellSizePixels, paint);
     }
 
+    /**
+     * Draw colored circles to represent current notes on each cell and draw X on cells that have
+     * incorrect values
+     * @param canvas the canvas on which to draw the notes
+     */
     private void drawNotes(Canvas canvas) {
         if (cells == null) return;
         for(Cell[] cellRow: cells)
@@ -225,19 +250,6 @@ public class SudokuBoardView extends View {
                 }
             }
 
-    }
-
-    public void highlightStartingCells(Canvas canvas) {
-        if(cells == null) return;
-        for (Cell[] cellRow : cells)
-            for(Cell cell : cellRow)
-                if(cell.isStartingCell()) {
-                    canvas.drawRect(cell.getCol() * cellSizePixels,
-                            cell.getRow() * cellSizePixels,
-                            (cell.getCol() + 1) * cellSizePixels,
-                            (cell.getRow() + 1) * cellSizePixels,
-                            thickLinePaint);
-                }
     }
     @Override
     public boolean onTouchEvent(MotionEvent event) {

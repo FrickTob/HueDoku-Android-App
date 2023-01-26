@@ -13,6 +13,10 @@ import com.app.hue_doku.generation.TerminalPattern;
 import java.util.Arrays;
 import java.util.HashSet;
 
+/**
+ * Simulates a Sudoku game with a 9x9 grid of cells
+ * @author tobyf
+ */
 public class SudokuGame {
 
     public MutableLiveData<Pair<Integer, Integer>> selectedCellLiveData = new MutableLiveData<>();
@@ -31,9 +35,6 @@ public class SudokuGame {
     private int numCorrect = 0;
     private Integer[] correctNums;
     private int numMistakes = 0;
-
-    String continueBoard;
-    String completeBoard;
 
     public SudokuGame(int difficulty, Context appContext) {
         Cell[][] cells = new Cell[9][9];
@@ -79,6 +80,10 @@ public class SudokuGame {
         numMistakesLiveData.postValue(numMistakes);
     }
 
+    /**
+     * Called when the user presses a color button to add a note or set the color of a cell.
+     * @param num the button number used by the user
+     */
     public void handleInput(int num) {
         if(selectedRow == -1 || selectedCol == -1) return;
         if(board.cells[selectedRow][selectedCol].isStartingCell()) return;
@@ -114,6 +119,13 @@ public class SudokuGame {
         }
         cellsLiveData.postValue(board.cells);
     }
+
+    /**
+     * Called when the user taps on a cell in the board to update the cell currently focused on for
+     * button inputs
+     * @param row the row number pressed by the user (0-indexed)
+     * @param col the column number pressed by the user (0-index)
+     */
     public void updateSelectedCell(int row, int col) {
         Cell cell = board.cells[row][col];
 
@@ -127,6 +139,11 @@ public class SudokuGame {
 
     }
 
+    /**
+     * Called when the user presses the notes button which sets the taking notes state of the SudkokuGame
+     * If the selected row has notes already, sets those notes to currentNotes or else sets current
+     * notes to an empty set to prepare for input
+     */
     public void toggleTakingNotes() {
         this.isTakingNotes = !this.isTakingNotes;
         isTakingNotesLiveData.postValue(isTakingNotes);
@@ -139,6 +156,10 @@ public class SudokuGame {
         activeNotesLiveData.postValue(currentNotes);
     }
 
+    /**
+     * Called when the delete button is pressed. Removes value, color and notes associated with the
+     * current cell.
+     */
     public void delete() {
         if(selectedRow == -1) return;
         Cell currCell = board.getCell(selectedRow, selectedCol);
@@ -152,8 +173,17 @@ public class SudokuGame {
         cellsLiveData.postValue(board.cells);
     }
 
+    /**
+     * @return the grid containing the correct values for the current sudoku game
+     */
     public int[][] getSolvedGrid() {return solvedGrid;}
 
+    /**
+     * Converts an 81 integer string to a 2x2 array used when getting a saved in-progress sudoku
+     * board from memory
+     * @param string a string of 81 integers corresponding to the values of a sudoku baord
+     * @return a 2x2 array of integers matching the values of a sudoku board
+     */
     public int[][] stringToGrid(String string) {
         int charToIntOffset = 48;
         int[][] grid = new int[9][9];
