@@ -19,19 +19,17 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.app.hue_doku.game.Cell;
-import com.app.hue_doku.view.custom.SudokuBoardView;
+import com.app.hue_doku.view.custom.HuedokuBoardView;
+import com.app.hue_doku.viewmodel.HuedokuViewModel;
 import com.app.hue_doku.viewmodel.MyViewModelFactory;
-import com.app.hue_doku.viewmodel.SudokuViewModel;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class GameActivity extends AppCompatActivity implements SudokuBoardView.OnTouchListener , View.OnClickListener {
-
-    private SudokuViewModel viewModel;
+public class GameActivity extends AppCompatActivity implements HuedokuBoardView.OnTouchListener , View.OnClickListener {
+    private HuedokuViewModel viewModel;
     private final Button[] buttons = new Button[9];
     private ImageButton notesButton;
     private ImageButton eraseButton;
@@ -56,14 +54,21 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
         super.onCreate(savedInstanceState);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
+        // Find user selected color palette
         colorPaletteSelection = prefs.getInt("ColorPalette", 1);
+
+        // Check if there is a game in progress (difficulty of 6)
         difficulty = getIntent().getIntExtra("Difficulty", 1);
         if(difficulty == 6) {
             difficulty = prefs.getInt("Difficulty", 1);
             time = Double.longBitsToDouble(prefs.getLong("time", prefs.getLong("time", 0L)));
             isContinuedGame=true;
         }
+
+        // Remove memory of saved game
         prefs.edit().remove("Difficulty").apply();
+
+        // Check user selected difficulty and update time save key and activity title accordingly
         String titleText = "";
         switch (difficulty) {
             case 1: timeKey = "BeginnerTime";
@@ -82,17 +87,22 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
                 titleText = "Insane";
             break;
         }
+
+        // Get the best time for the selected difficulty to be displayed upon a completed game
         bestTime = prefs.getString(timeKey, "No Previous Times");
 
         setContentView(R.layout.activity_game);
 
+        // Initialize timer text view to be updated later
         timerText = findViewById(R.id.timerText);
-        difficultyTitle = findViewById(R.id.difficultyTitle);
 
+        // Set title text of the activity
+        difficultyTitle = findViewById(R.id.difficultyTitle);
         difficultyTitle.setText(titleText);
 
         timer = new Timer();
 
+        // Initialize all buttons
         buttons[0] = findViewById(R.id.oneButton);
         buttons[1] = findViewById(R.id.twoButton);
         buttons[2] = findViewById(R.id.threeButton);
@@ -102,28 +112,27 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
         buttons[6] = findViewById(R.id.sevenButton);
         buttons[7] = findViewById(R.id.eightButton);
         buttons[8] = findViewById(R.id.nineButton);
-
         notesButton = findViewById(R.id.notesButton);
         eraseButton = findViewById(R.id.eraseButton);
 
 
-
+        // Create click listeners and set background colors for all buttons
         for(int i = 0; i < 9; i++) {
             buttons[i].setOnClickListener(this);
             buttons[i].setBackgroundColor(getButtonColor(colorPaletteSelection, i));
         }
-
-
         notesButton.setOnClickListener(view -> viewModel.game.toggleTakingNotes());
-
         eraseButton.setOnClickListener(view -> viewModel.game.delete());
 
-        SudokuBoardView boardView = findViewById(R.id.sudokuBoard);
+        // Initialize and attach ontouchlistener to the board view
+        HuedokuBoardView boardView = findViewById(R.id.sudokuBoard);
         boardView.registerListener(this);
 
-        if(isContinuedGame) viewModel = new ViewModelProvider(this, new MyViewModelFactory(getApplication(), 6, getApplicationContext())).get(SudokuViewModel.class);
-        else viewModel = new ViewModelProvider(this, new MyViewModelFactory(getApplication(), difficulty, getApplicationContext())).get(SudokuViewModel.class);
+        // Initialize viewModel (with difficulty 6 if continued game)
+        if(isContinuedGame) viewModel = new ViewModelProvider(this, new MyViewModelFactory(getApplication(), 6, getApplicationContext())).get(HuedokuViewModel.class);
+        else viewModel = new ViewModelProvider(this, new MyViewModelFactory(getApplication(), difficulty, getApplicationContext())).get(HuedokuViewModel.class);
 
+        // Set up observers for live data in the HuedokuGame stored in the viewModel for UI updating
         viewModel.game.activeNotesLiveData.observe(this, new Observer<HashSet<Integer>>() {
             @Override
             public void onChanged(HashSet<Integer> integers) {updateHighlightedKeysUI(integers);}
@@ -156,14 +165,15 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
         viewModel.game.totalNumCorrectLiveData.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer numCorrect) {
-                if(numCorrect == numCells)
-                    triggerGameComplete();
-            }
+                if(numCorrect == numCells) triggerGameComplete();}
         });
-        boardView.setStartingCells(viewModel.game.getSolvedGrid());
+        boardView.setCorrectValues(viewModel.game.getSolvedGrid());
     }
 
 
+    /**
+     * Creates an AlertDialog when game is completed with statistics and stores relevant data
+     */
     private void triggerGameComplete() {
         timeString =(String) timerText.getText();
         isComplete = true;
@@ -194,6 +204,12 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
         });
         dialog.show();
     }
+
+    /**
+     * Used to check if there is a new fastest time that needs to be stored for future games
+     * @return Whether or not the time it took to complete the current HueDoku game is less than the
+     * previous stored time for that difficulty level
+     */
     private boolean betterTime() {
         if(bestTime.equals("No Previous Times")) return true;
         if(timeString.charAt(0) < bestTime.charAt(0))
@@ -213,6 +229,10 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
         return false;
     }
 
+    /**
+     * Generated AlertDialog to notify the user that the game is over and allows them to start a new
+     * game of the same difficulty or navigate to the home screen
+     */
     public void triggerGameOver() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(GameActivity.this);
         isComplete = true;
@@ -235,20 +255,40 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
         });
         dialog.show();
     }
+
+    /**
+     * Update cells in the UI
+     * @param cells 2x2 array of cells to be used to update the huedoku board UI
+     */
     private void updateCells(Cell[][] cells) {
-        SudokuBoardView sudokuBoardView = findViewById(R.id.sudokuBoard);
-        sudokuBoardView.updateCells(cells);
-    }
-    private void updateSelectedCellUI(Pair<Integer,Integer> cell) {
-        if (cell == null) return;
-        SudokuBoardView sudokuBoardView = findViewById(R.id.sudokuBoard);
-        sudokuBoardView.updateSelectedCellUI(cell.first,cell.second);
+        HuedokuBoardView huedokuBoardView = findViewById(R.id.sudokuBoard);
+        huedokuBoardView.updateCells(cells);
     }
 
+    /**
+     * Sets the cell selected by the user to be used to update the huedoku baord UI
+     * @param cell the currently selected cell
+     */
+    private void updateSelectedCellUI(Pair<Integer,Integer> cell) {
+        if (cell == null) return;
+        HuedokuBoardView huedokuBoardView = findViewById(R.id.sudokuBoard);
+        huedokuBoardView.updateSelectedCellUI(cell.first,cell.second);
+    }
+
+    /**
+     * Sets whether or not the user is taking notes and updates the notesButton appearance accordingly
+     * @param isTakingNotes true if user is taking notes and false otherwise
+     */
     private void updateNoteTakingUI(boolean isTakingNotes) {
         notesButton.setColorFilter(isTakingNotes ? Color.GREEN : Color.BLACK, PorterDuff.Mode.MULTIPLY);
     }
 
+    /**
+     * Given a set of integers which represents the notes associated with the selected cell, make
+     * the corresponding buttons appear dark gray if they are in the set and their normal color
+     * otherwise
+     * @param notes
+     */
     private void updateHighlightedKeysUI(HashSet<Integer> notes) {
         Integer[] totalEachNum = viewModel.game.correctNumsLiveData.getValue();
         if(notes == null) return;
@@ -259,6 +299,12 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
                 buttons[i].setBackgroundColor(getButtonColor(colorPaletteSelection, i));
     }
 
+    /**
+     * Given a list of the number of correct cells associated with a given color, make the
+     * corresponding color button dark gray if all of the cells of that color are correctly colored
+     * @param totals a 9-element array of integers which represent the number of correctly colored
+     *               squares for each color
+     */
     private void updateCompletedKeysUI(Integer[] totals) {
         if(totals == null) return;
         for(int i = 0; i < 9; i++)
@@ -268,12 +314,23 @@ public class GameActivity extends AppCompatActivity implements SudokuBoardView.O
                 buttons[i].setBackgroundColor(getButtonColor(colorPaletteSelection, i));
     }
 
+    /**
+     * Update the text of the mistakes textView with the given number of mistakes
+     * @param numMistakes the number of mistakes to be displayed in the activity
+     */
     private void updateNumMistakes(int numMistakes) {
         TextView mistakesText = findViewById(R.id.mistakesText);
         mistakesText.setText("Mistakes: " + numMistakes + "/3");
     }
 
 
+    /**
+     * Returns the correct color given the palette the user has selected and the index of the color
+     * (0-8) as there are 9 distinct huedoku colors
+     * @param selectedPalette the number of the palette user has selected (currently only 2 palettes possible)
+     * @param i the index of the color you want to get from the specified palette
+     * @return the hexidecimal code corresponding to the desired color
+     */
     public int getButtonColor(int selectedPalette, int i) {
         if(selectedPalette == 2) {
             switch (i) {

@@ -18,13 +18,12 @@ import com.app.hue_doku.R;
 import com.app.hue_doku.game.Cell;
 
 import java.util.HashSet;
-import java.util.prefs.Preferences;
 
 /**
  * Custom view to display sudoku board to users
  * @author tobyf
  */
-public class SudokuBoardView extends View {
+public class HuedokuBoardView extends View {
     private Paint thickLinePaint;
     private Paint thinLinePaint;
     private Paint selectedCellPaint;
@@ -53,7 +52,7 @@ public class SudokuBoardView extends View {
 
     private int selectedColorPalette = 1;
 
-    public SudokuBoardView(Context context, AttributeSet attributeSet) {
+    public HuedokuBoardView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -251,6 +250,13 @@ public class SudokuBoardView extends View {
             }
 
     }
+
+    /**
+     *
+     * @param event user touch event passed when user touches sudoku board
+     * @return whether or not the touch event was used. Currently the only touch events that will
+     * return true are ACTION_DOWN events
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean used = false;
@@ -260,33 +266,63 @@ public class SudokuBoardView extends View {
         }
         return used;
     }
+
+    /**
+     * Calculates the row and column of the cell the user touched after a touch event.
+     * @param x x coordinate of touch event
+     * @param y y coordinate of touch event
+     */
     private void handleTouchEvent(float x, float y) {
         int possibleSelectedRow = (int) (y / cellSizePixels);
         int possibleSelectedCol = (int) (x / cellSizePixels);
         listener.onCellTouched(possibleSelectedRow, possibleSelectedCol);
     }
 
+    /**
+     * Changes the selected row and selected column and redraws the view with this updated info
+     * @param row the newly selected row
+     * @param col the newly selected column
+     */
     public void updateSelectedCellUI(int row, int col) {
         selectedRow = row;
         selectedCol = col;
         invalidate();
     }
 
+    /**
+     * Replace the current cell array with cells
+     * @param cells the new cell array to be drawn in the view
+     */
     public void updateCells(Cell[][] cells) {
         this.cells = cells;
         invalidate();
     }
 
-    public void setStartingCells(int[][] correctValues) {
+    /**
+     * Sets the currect values of cells to correctValues
+     * @param correctValues the new correct values array to be used to draw the view
+     */
+    public void setCorrectValues(int[][] correctValues) {
         this.correctValues = correctValues;
     }
 
 
+    /**
+     * Set the on touch listener for this view
+     * @param listener the listener for the view
+     */
     public void registerListener(OnTouchListener listener) {this.listener = listener;}
     public interface OnTouchListener {
         public void onCellTouched(int row, int col);
     }
 
+    /**
+     * Returns the correct color given the palette the user has selected and the index of the color
+     * (0-8) as there are 9 distinct huedoku colors
+     * @param paletteNum the number of the palette user has selected (currently only 2 palettes possible)
+     * @param index the index of the color you want to get from the specified palette
+     * @return the hexidecimal code corresponding to the desired color
+     */
     public int getColor(int paletteNum, int index) {
         Resources res = getContext().getResources();
         if(paletteNum == 2) { // alt colors 1

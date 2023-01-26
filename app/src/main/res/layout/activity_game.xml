@@ -33,7 +33,7 @@
         android:layout_above="@id/sudokuBoard"
         android:layout_alignEnd="@id/sudokuBoard"/>
 
-    <com.app.hue_doku.view.custom.SudokuBoardView
+    <com.app.hue_doku.view.custom.HuedokuBoardView
         android:id="@+id/sudokuBoard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

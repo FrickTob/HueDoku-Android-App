@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Find dimensions of the screen running the app and change the layout accordingly
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         if(displayMetrics.widthPixels >= 1200) // tablet
@@ -32,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
                 "Advanced",
                 "Expert",
                 "Insane"};
+
+        // Initialize and create click listener for the play button that starts a new GameActivity
         final Button playButton = findViewById(R.id.homePlayButton);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,13 +54,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        // Initialize and set on click listener for the customize button
         final ImageButton customizeButton = findViewById(R.id.customizeButton);
         customizeButton.setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
         customizeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 System.out.println("Clicked!");
-                createCustomizePopUp(view);
+                createCustomizePopUp();
             }
         });
     }
@@ -64,11 +69,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        // Check to see if there is a saved game
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String inProgressBoard = prefs.getString("inProgressBoard", "");
 
         final Button continueButton = findViewById(R.id.continueButton);
         continueButton.setVisibility(View.GONE);
+
+        // if there is a saved game, show continue button and make it resume game on click
         if(!inProgressBoard.equals("")) {
             continueButton.setVisibility(View.VISIBLE);
             continueButton.setOnClickListener(new View.OnClickListener() {
@@ -81,7 +90,12 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-    private void createCustomizePopUp(View view) {
+
+    /**
+     * Method to generate the customize pop up which allows the user to select their desired color
+     * palette
+     */
+    private void createCustomizePopUp() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         final View popUpView = getLayoutInflater().inflate(R.layout.popup_customize, null);
         dialogBuilder.setView(popUpView);
@@ -114,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
                 prefs.edit().putInt("ColorPalette", 2).apply();
             }
         });
+
+        // change the background of the color palette options depending on the currently selected palette
         if(prefs.getInt("ColorPalette", 1) == 2) {
             altColorBox1.setBackground(getResources().getDrawable(R.drawable.selectedboxborder));
             defaultColorBox.setBackground(getResources().getDrawable(R.drawable.border));

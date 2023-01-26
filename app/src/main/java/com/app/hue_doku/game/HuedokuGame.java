@@ -10,14 +10,13 @@ import androidx.lifecycle.MutableLiveData;
 import com.app.hue_doku.generation.GeneratingAlgorithm;
 import com.app.hue_doku.generation.TerminalPattern;
 
-import java.util.Arrays;
 import java.util.HashSet;
 
 /**
  * Simulates a Sudoku game with a 9x9 grid of cells
  * @author tobyf
  */
-public class SudokuGame {
+public class HuedokuGame {
 
     public MutableLiveData<Pair<Integer, Integer>> selectedCellLiveData = new MutableLiveData<>();
     public MutableLiveData<Cell[][]> cellsLiveData = new MutableLiveData<>();
@@ -36,7 +35,7 @@ public class SudokuGame {
     private Integer[] correctNums;
     private int numMistakes = 0;
 
-    public SudokuGame(int difficulty, Context appContext) {
+    public HuedokuGame(int difficulty, Context appContext) {
         Cell[][] cells = new Cell[9][9];
         int[][] startingVals;
         correctNums = new Integer[9];
