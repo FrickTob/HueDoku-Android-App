@@ -24,23 +24,19 @@ import java.util.HashSet;
  * @author tobyf
  */
 public class HuedokuBoardView extends View {
-    private Paint thickLinePaint;
-    private Paint thinLinePaint;
-    private Paint selectedCellPaint;
-    private Paint conflictingCellPaint;
-    private Paint textPaint;
-    private Paint incorrectValTextPaint;
-    private Paint noteTextPaint;
-    private Paint startingCellFillPaint;
-    private Paint[] colorPaints = new Paint[9];
+    private final Paint thickLinePaint;
+    private final Paint thinLinePaint;
+    private final Paint selectedCellPaint;
+    private final Paint conflictingCellPaint;
+    private final Paint textPaint;
+    private final Paint[] colorPaints = new Paint[9];
 
-    private int sqrtSize = 3;
-    private int size = 9;
+    private final int sqrtSize = 3;
+    private final int size = 9;
 
     // set in OnDraw method
     private float cellSizePixels = 0f;
     private float noteSizePixels = 0f;
-    private float borderOffset = 0f;
 
     private int selectedRow = -1;
     private int selectedCol = -1;
@@ -50,13 +46,11 @@ public class HuedokuBoardView extends View {
     private Cell[][] cells = null;
     private int[][] correctValues = null;
 
-    private int selectedColorPalette = 1;
-
     public HuedokuBoardView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        selectedColorPalette = prefs.getInt("ColorPalette", 1);
+        int selectedColorPalette = prefs.getInt("ColorPalette", 1);
         // Set up paints
         thickLinePaint = new Paint();
         thickLinePaint.setColor(Color.BLACK);
@@ -81,21 +75,11 @@ public class HuedokuBoardView extends View {
         textPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         textPaint.setFakeBoldText(true);
 
-        incorrectValTextPaint = new Paint();
-        incorrectValTextPaint.setColor(Color.RED);
-        incorrectValTextPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
-        noteTextPaint = new Paint();
-        noteTextPaint.setColor(Color.BLACK);
-        noteTextPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-
-
-        startingCellFillPaint = new Paint();
+        Paint startingCellFillPaint = new Paint();
         startingCellFillPaint.setColor(Color.DKGRAY);
         startingCellFillPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
-
-        Resources res = getContext().getResources();
         colorPaints[0] = new Paint();
         colorPaints[0].setStyle(Paint.Style.FILL_AND_STROKE);
         colorPaints[0].setColor(getColor(selectedColorPalette, 0));
@@ -139,9 +123,9 @@ public class HuedokuBoardView extends View {
 
     @Override
     protected void onDraw (Canvas canvas) {
-        updateMeasurements(canvas.getWidth());
+        updateMeasurements(getWidth());
         // Draw all nums and lines
-        cellSizePixels = canvas.getWidth() / size;
+        cellSizePixels = getWidth() / size;
         fillCells(canvas);
         drawNotes(canvas);
         drawLines(canvas);
@@ -155,10 +139,7 @@ public class HuedokuBoardView extends View {
     private void updateMeasurements(float width) {
         cellSizePixels = (width / size);
         noteSizePixels = cellSizePixels / sqrtSize;
-        borderOffset = 4f;
-        noteTextPaint.setTextSize(cellSizePixels / sqrtSize);
         textPaint.setTextSize(cellSizePixels / 1.5F);
-        incorrectValTextPaint.setTextSize(cellSizePixels / 1.5F);
     }
 
     /**
@@ -229,12 +210,8 @@ public class HuedokuBoardView extends View {
                     HashSet<Integer> notes = cell.getNotes();
                     if(notes == null) return;
                     for(Integer note : notes) {
-                        String valueString = note + "";
                         int rowInCell = (note - 1) / sqrtSize;
                         int colInCell = (note - 1) % sqrtSize;
-                        noteTextPaint.getTextBounds(valueString, 0, valueString.length(), textBounds);
-                        float textWidth = noteTextPaint.measureText(valueString);
-                        float textHeight = textBounds.height();
                         canvas.drawCircle((col* cellSizePixels) + (colInCell * noteSizePixels) + (noteSizePixels / 2), (row * cellSizePixels) + (rowInCell * noteSizePixels) + (noteSizePixels / 2), noteSizePixels / 2.5F, colorPaints[note - 1]);
                     }
                 }
@@ -313,7 +290,7 @@ public class HuedokuBoardView extends View {
      */
     public void registerListener(OnTouchListener listener) {this.listener = listener;}
     public interface OnTouchListener {
-        public void onCellTouched(int row, int col);
+        void onCellTouched(int row, int col);
     }
 
     /**
@@ -336,6 +313,20 @@ public class HuedokuBoardView extends View {
                 case 6: return res.getColor(R.color.sudokuAlt17);
                 case 7: return res.getColor(R.color.sudokuAlt18);
                 case 8: return res.getColor(R.color.sudokuAlt19);
+            }
+        }
+        else if (paletteNum == 3) {// alt colors 2
+            switch (index) {
+                case 0: return getResources().getColor(R.color.sudokuAlt21);
+                case 1: return getResources().getColor(R.color.sudokuAlt22);
+                case 2: return getResources().getColor(R.color.sudokuAlt23);
+                case 3: return getResources().getColor(R.color.sudokuAlt24);
+                case 4: return getResources().getColor(R.color.sudokuAlt25);
+                case 5: return getResources().getColor(R.color.sudokuAlt26);
+                case 6: return getResources().getColor(R.color.sudokuAlt27);
+                case 7: return getResources().getColor(R.color.sudokuAlt28);
+                case 8: return getResources().getColor(R.color.sudokuAlt29);
+                default: return -1;
             }
         }
         else { // default colors

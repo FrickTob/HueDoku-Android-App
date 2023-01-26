@@ -1,11 +1,10 @@
 package com.app.hue_doku;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -25,6 +24,7 @@ import com.app.hue_doku.viewmodel.MyViewModelFactory;
 
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -32,7 +32,6 @@ public class GameActivity extends AppCompatActivity implements HuedokuBoardView.
     private HuedokuViewModel viewModel;
     private final Button[] buttons = new Button[9];
     private ImageButton notesButton;
-    private ImageButton eraseButton;
     Integer difficulty = 1;
 
     TextView difficultyTitle;
@@ -113,7 +112,7 @@ public class GameActivity extends AppCompatActivity implements HuedokuBoardView.
         buttons[7] = findViewById(R.id.eightButton);
         buttons[8] = findViewById(R.id.nineButton);
         notesButton = findViewById(R.id.notesButton);
-        eraseButton = findViewById(R.id.eraseButton);
+        ImageButton eraseButton = findViewById(R.id.eraseButton);
 
 
         // Create click listeners and set background colors for all buttons
@@ -133,40 +132,19 @@ public class GameActivity extends AppCompatActivity implements HuedokuBoardView.
         else viewModel = new ViewModelProvider(this, new MyViewModelFactory(getApplication(), difficulty, getApplicationContext())).get(HuedokuViewModel.class);
 
         // Set up observers for live data in the HuedokuGame stored in the viewModel for UI updating
-        viewModel.game.activeNotesLiveData.observe(this, new Observer<HashSet<Integer>>() {
-            @Override
-            public void onChanged(HashSet<Integer> integers) {updateHighlightedKeysUI(integers);}
+        viewModel.game.activeNotesLiveData.observe(this, this::updateHighlightedKeysUI);
+        viewModel.game.isTakingNotesLiveData.observe(this, this::updateNoteTakingUI);
+        viewModel.game.selectedCellLiveData.observe(this, this::updateSelectedCellUI);
+        viewModel.game.cellsLiveData.observe(this, this::updateCells);
+        viewModel.game.numMistakesLiveData.observe(this, numMistakes -> {
+            if(numMistakes >= 3) triggerGameOver();
+            else updateNumMistakes(numMistakes);
         });
-        viewModel.game.isTakingNotesLiveData.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {updateNoteTakingUI(aBoolean);}
-        });
-        viewModel.game.selectedCellLiveData.observe(this, new Observer<Pair<Integer, Integer>>() {
-            @Override
-            public void onChanged(Pair<Integer, Integer> cell) {updateSelectedCellUI(cell);}
-        });
-        viewModel.game.cellsLiveData.observe(this, new Observer<Cell[][]>() {
-            @Override
-            public void onChanged(Cell[][] cells) {updateCells(cells);}
-        });
-        viewModel.game.numMistakesLiveData.observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer numMistakes) {
-                if(numMistakes >= 3) triggerGameOver();
-                else updateNumMistakes(numMistakes);
-            }
-        });
-        viewModel.game.correctNumsLiveData.observe(this, new Observer<Integer[]>() {
-            @Override
-            public void onChanged(Integer[] integers) {updateCompletedKeysUI(integers);}
-        });
+        viewModel.game.correctNumsLiveData.observe(this, this::updateCompletedKeysUI);
 
         int numCells = 81;
-        viewModel.game.totalNumCorrectLiveData.observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer numCorrect) {
-                if(numCorrect == numCells) triggerGameComplete();}
-        });
+        viewModel.game.totalNumCorrectLiveData.observe(this, numCorrect -> {
+            if(numCorrect == numCells) triggerGameComplete();});
         boardView.setCorrectValues(viewModel.game.getSolvedGrid());
     }
 
@@ -186,21 +164,15 @@ public class GameActivity extends AppCompatActivity implements HuedokuBoardView.
         }
         dialog.setTitle("Congratulations! Game Complete");
         dialog.setMessage("Time: " + timeString + "\nPrevious Best: " + bestTime + "\n" +newBest);
-        dialog.setPositiveButton("New Game", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent(getBaseContext(), GameActivity.class);
-                intent.putExtra("Difficulty", difficulty);
-                startActivity(intent);
-                finish();
-            }
+        dialog.setPositiveButton("New Game", (dialogInterface, i) -> {
+            Intent intent = new Intent(getBaseContext(), GameActivity.class);
+            intent.putExtra("Difficulty", difficulty);
+            startActivity(intent);
+            finish();
         });
-        dialog.setNegativeButton("Home", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                startActivity(intent);
-            }
+        dialog.setNegativeButton("Home", (dialogInterface, i) -> {
+            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            startActivity(intent);
         });
         dialog.show();
     }
@@ -221,8 +193,7 @@ public class GameActivity extends AppCompatActivity implements HuedokuBoardView.
                 if(timeString.charAt(3) < bestTime.charAt(3))
                     return true;
                 else if (timeString.charAt(3) == bestTime.charAt(3)) {
-                    if(timeString.charAt(4) < bestTime.charAt(4))
-                        return true;
+                    return timeString.charAt(4) < bestTime.charAt(4);
                 }
             }
         }
@@ -237,21 +208,15 @@ public class GameActivity extends AppCompatActivity implements HuedokuBoardView.
         AlertDialog.Builder dialog = new AlertDialog.Builder(GameActivity.this);
         isComplete = true;
         dialog.setTitle("Game Over!");
-        dialog.setPositiveButton("New Game", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent(getBaseContext(), GameActivity.class);
-                intent.putExtra("Difficulty", difficulty);
-                startActivity(intent);
-                finish();
-            }
+        dialog.setPositiveButton("New Game", (dialogInterface, i) -> {
+            Intent intent = new Intent(getBaseContext(), GameActivity.class);
+            intent.putExtra("Difficulty", difficulty);
+            startActivity(intent);
+            finish();
         });
-        dialog.setNegativeButton("Home", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                startActivity(intent);
-            }
+        dialog.setNegativeButton("Home", (dialogInterface, i) -> {
+            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            startActivity(intent);
         });
         dialog.show();
     }
@@ -287,13 +252,13 @@ public class GameActivity extends AppCompatActivity implements HuedokuBoardView.
      * Given a set of integers which represents the notes associated with the selected cell, make
      * the corresponding buttons appear dark gray if they are in the set and their normal color
      * otherwise
-     * @param notes
+     * @param notes Set of integers which are the notes attached to the highlighted cell
      */
     private void updateHighlightedKeysUI(HashSet<Integer> notes) {
         Integer[] totalEachNum = viewModel.game.correctNumsLiveData.getValue();
         if(notes == null) return;
         for(int i = 0; i < 9; i++)
-            if(notes.contains(i+1) || totalEachNum[i] >= 9)
+            if(notes.contains(i+1) || Objects.requireNonNull(totalEachNum)[i] >= 9)
                 buttons[i].setBackgroundColor(Color.DKGRAY);
             else
                 buttons[i].setBackgroundColor(getButtonColor(colorPaletteSelection, i));
@@ -320,7 +285,7 @@ public class GameActivity extends AppCompatActivity implements HuedokuBoardView.
      */
     private void updateNumMistakes(int numMistakes) {
         TextView mistakesText = findViewById(R.id.mistakesText);
-        mistakesText.setText("Mistakes: " + numMistakes + "/3");
+        mistakesText.setText(String.format(getResources().getString(R.string.mistakesText), numMistakes));
     }
 
 
@@ -334,50 +299,44 @@ public class GameActivity extends AppCompatActivity implements HuedokuBoardView.
     public int getButtonColor(int selectedPalette, int i) {
         if(selectedPalette == 2) {
             switch (i) {
-                case 0:
-                    return getResources().getColor(R.color.sudokuAlt11);
-                case 1:
-                    return getResources().getColor(R.color.sudokuAlt12);
-                case 2:
-                    return getResources().getColor(R.color.sudokuAlt13);
-                case 3:
-                    return getResources().getColor(R.color.sudokuAlt14);
-                case 4:
-                    return getResources().getColor(R.color.sudokuAlt15);
-                case 5:
-                    return getResources().getColor(R.color.sudokuAlt16);
-                case 6:
-                    return getResources().getColor(R.color.sudokuAlt17);
-                case 7:
-                    return getResources().getColor(R.color.sudokuAlt18);
-                case 8:
-                    return getResources().getColor(R.color.sudokuAlt19);
-                default:
-                    return -1;
+                case 0: return getResources().getColor(R.color.sudokuAlt11);
+                case 1: return getResources().getColor(R.color.sudokuAlt12);
+                case 2: return getResources().getColor(R.color.sudokuAlt13);
+                case 3: return getResources().getColor(R.color.sudokuAlt14);
+                case 4: return getResources().getColor(R.color.sudokuAlt15);
+                case 5: return getResources().getColor(R.color.sudokuAlt16);
+                case 6: return getResources().getColor(R.color.sudokuAlt17);
+                case 7: return getResources().getColor(R.color.sudokuAlt18);
+                case 8: return getResources().getColor(R.color.sudokuAlt19);
+                default: return -1;
+            }
+        }
+        else if (selectedPalette == 3) {
+            switch (i) {
+                case 0: return getResources().getColor(R.color.sudokuAlt21);
+                case 1: return getResources().getColor(R.color.sudokuAlt22);
+                case 2: return getResources().getColor(R.color.sudokuAlt23);
+                case 3: return getResources().getColor(R.color.sudokuAlt24);
+                case 4: return getResources().getColor(R.color.sudokuAlt25);
+                case 5: return getResources().getColor(R.color.sudokuAlt26);
+                case 6: return getResources().getColor(R.color.sudokuAlt27);
+                case 7: return getResources().getColor(R.color.sudokuAlt28);
+                case 8: return getResources().getColor(R.color.sudokuAlt29);
+                default: return -1;
             }
         }
         else {
             switch (i) {
-                case 0:
-                    return getResources().getColor(R.color.sudokuDefault1);
-                case 1:
-                    return getResources().getColor(R.color.sudokuDefault2);
-                case 2:
-                    return getResources().getColor(R.color.sudokuDefault3);
-                case 3:
-                    return getResources().getColor(R.color.sudokuDefault4);
-                case 4:
-                    return getResources().getColor(R.color.sudokuDefault5);
-                case 5:
-                    return getResources().getColor(R.color.sudokuDefault6);
-                case 6:
-                    return getResources().getColor(R.color.sudokuDefault7);
-                case 7:
-                    return getResources().getColor(R.color.sudokuDefault8);
-                case 8:
-                    return getResources().getColor(R.color.sudokuDefault9);
-                default:
-                    return -1;
+                case 0: return getResources().getColor(R.color.sudokuDefault1);
+                case 1: return getResources().getColor(R.color.sudokuDefault2);
+                case 2: return getResources().getColor(R.color.sudokuDefault3);
+                case 3: return getResources().getColor(R.color.sudokuDefault4);
+                case 4: return getResources().getColor(R.color.sudokuDefault5);
+                case 5: return getResources().getColor(R.color.sudokuDefault6);
+                case 6: return getResources().getColor(R.color.sudokuDefault7);
+                case 7: return getResources().getColor(R.color.sudokuDefault8);
+                case 8: return getResources().getColor(R.color.sudokuDefault9);
+                default: return -1;
             }
         }
 
@@ -389,6 +348,7 @@ public class GameActivity extends AppCompatActivity implements HuedokuBoardView.
         viewModel.game.updateSelectedCell(row, col);
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -441,12 +401,9 @@ public class GameActivity extends AppCompatActivity implements HuedokuBoardView.
         timerTask = new TimerTask() {
             @Override
             public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        time++;
-                        timerText.setText(getTimerText());
-                    }
+                runOnUiThread(() -> {
+                    time++;
+                    timerText.setText(getTimerText());
                 });
             }
         };
@@ -463,7 +420,6 @@ public class GameActivity extends AppCompatActivity implements HuedokuBoardView.
     protected void onPause() {
         super.onPause();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        System.out.println("Stopping: Complete? " + isComplete);
         if(isComplete) {
             prefs.edit().remove("inProgressBoard").apply();
             prefs.edit().remove("completeBoard").apply();
@@ -472,7 +428,7 @@ public class GameActivity extends AppCompatActivity implements HuedokuBoardView.
             prefs.edit().remove("Mistakes").apply();
         }
         else {
-            String inProgressString = gridToString(viewModel.game.cellsLiveData.getValue());
+            String inProgressString = gridToString(Objects.requireNonNull(viewModel.game.cellsLiveData.getValue()));
             String completeInProgressString = gridToString(viewModel.game.getSolvedGrid());
 
 

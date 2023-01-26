@@ -11,9 +11,9 @@ import androidx.lifecycle.ViewModelProvider;
  * stores game data
  */
     public class MyViewModelFactory implements ViewModelProvider.Factory {
-        private Application mApplication;
-        private int difficulty;
-        private Context appContext;
+        private final Application mApplication;
+        private final int difficulty;
+        private final Context appContext;
         public MyViewModelFactory(Application application, int param, Context context) {
             mApplication = application;
             difficulty = param;

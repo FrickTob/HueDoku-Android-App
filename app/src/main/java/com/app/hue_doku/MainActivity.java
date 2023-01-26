@@ -1,9 +1,9 @@
 package com.app.hue_doku;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -37,32 +37,23 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize and create click listener for the play button that starts a new GameActivity
         final Button playButton = findViewById(R.id.homePlayButton);
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-                dialog.setTitle("Choose Difficulty");
-                dialog.setItems(difficulties, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(view.getContext(), GameActivity.class);
-                        intent.putExtra("Difficulty", which + 1);
-                        startActivity(intent);
-                    }
-                } );
-                dialog.show();
-            }
+        playButton.setOnClickListener(view -> {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+            dialog.setTitle("Choose Difficulty");
+            dialog.setItems(difficulties, (dialog1, which) -> {
+                Intent intent = new Intent(view.getContext(), GameActivity.class);
+                intent.putExtra("Difficulty", which + 1);
+                startActivity(intent);
+            });
+            dialog.show();
         });
 
 
         // Initialize and set on click listener for the customize button
         final ImageButton customizeButton = findViewById(R.id.customizeButton);
         customizeButton.setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-        customizeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                System.out.println("Clicked!");
-                createCustomizePopUp();
-            }
+        customizeButton.setOnClickListener(view -> {
+            createCustomizePopUp();
         });
     }
 
@@ -80,13 +71,10 @@ public class MainActivity extends AppCompatActivity {
         // if there is a saved game, show continue button and make it resume game on click
         if(!inProgressBoard.equals("")) {
             continueButton.setVisibility(View.VISIBLE);
-            continueButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(view.getContext(), GameActivity.class);
-                    intent.putExtra("Difficulty", 6);
-                    startActivity(intent);
-                }
+            continueButton.setOnClickListener(view -> {
+                Intent intent = new Intent(view.getContext(), GameActivity.class);
+                intent.putExtra("Difficulty", 6);
+                startActivity(intent);
             });
         }
     }
@@ -103,40 +91,42 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
 
         ImageButton closeButton = popUpView.findViewById(R.id.customizePopupCloseButton);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        closeButton.setOnClickListener(view -> dialog.dismiss());
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         RelativeLayout defaultColorBox = popUpView.findViewById(R.id.defaultPaletteBox);
-        defaultColorBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                prefs.edit().putInt("ColorPalette", 1).apply();
-            }
+        defaultColorBox.setOnClickListener(view -> {
+            dialog.dismiss();
+            prefs.edit().putInt("ColorPalette", 1).apply();
         });
 
         RelativeLayout altColorBox1 = popUpView.findViewById(R.id.altPaletteBox1);
-        altColorBox1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                prefs.edit().putInt("ColorPalette", 2).apply();
-            }
+        altColorBox1.setOnClickListener(view -> {
+            dialog.dismiss();
+            prefs.edit().putInt("ColorPalette", 2).apply();
+        });
+
+        RelativeLayout altColorBox2 = popUpView.findViewById(R.id.altPaletteBox2);
+        altColorBox2.setOnClickListener(view -> {
+            dialog.dismiss();
+            prefs.edit().putInt("ColorPalette", 3).apply();
         });
 
         // change the background of the color palette options depending on the currently selected palette
         if(prefs.getInt("ColorPalette", 1) == 2) {
-            altColorBox1.setBackground(getResources().getDrawable(R.drawable.selectedboxborder));
-            defaultColorBox.setBackground(getResources().getDrawable(R.drawable.border));
+            altColorBox1.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.selectedboxborder, null));
+            altColorBox2.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.border, null));
+            defaultColorBox.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.border, null));
+        }
+        else if (prefs.getInt("ColorPalette", 1) == 3) {
+            altColorBox1.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.border, null));
+            altColorBox2.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.selectedboxborder, null));
+            defaultColorBox.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.border, null));
         }
         else {
-            altColorBox1.setBackground(getResources().getDrawable(R.drawable.border));
-            defaultColorBox.setBackground(getResources().getDrawable(R.drawable.selectedboxborder));
+            altColorBox1.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.border, null));
+            altColorBox2.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.border, null));
+            defaultColorBox.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.selectedboxborder, null));
         }
     }
 }

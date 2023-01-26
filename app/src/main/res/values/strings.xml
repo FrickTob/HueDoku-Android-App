@@ -8,6 +8,7 @@
 
     <string name="timeStartingText">00:00</string>
     <string name="mistakesStartingText">Mistakes: 0/3</string>
+    <string name="mistakesText">Mistakes: %1$d/3</string>
 
     <!-- Color Input Buttons -->
     <string name="color1Description">Color One</string>
@@ -29,7 +30,9 @@
     <string name="advancedDifficultyTitle">Advanced</string>
     <string name="expertDifficultyTitle">Expert</string>
     <string name="insanityDifficultyTitle">Insanity</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="defaultColorPaletteText">Default</string>
+    <string name="altColorPalette1Text">High-Contrast</string>
+    <string name="altColorPalette2Text">High-Contrast 2</string>
 
 </resources>

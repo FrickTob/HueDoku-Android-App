@@ -47,8 +47,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Default"
-        android:textSize="20dp"
+        android:text="@string/defaultColorPaletteText"
+        android:textSize="20sp"
         android:textColor="@color/black"
         android:layout_below="@id/defaultColorImage"
         android:layout_centerHorizontal="true"/>
@@ -73,12 +73,41 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="High Contrast"
-        android:textSize="20dp"
+        android:text="@string/altColorPalette1Text"
+        android:textSize="20sp"
         android:textColor="@color/black"
         android:layout_below="@id/altColorImage"
         android:layout_centerHorizontal="true"/>
 </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/altPaletteBox2"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:padding="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/altPaletteBox1"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp">
+
+            <ImageView
+                android:id="@+id/altColorImage2"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/altcolorpalette2"
+                android:layout_centerHorizontal="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/altColorPalette2Text"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_below="@id/altColorImage2"
+                android:layout_centerHorizontal="true"/>
+
+        </RelativeLayout>
 
 
 

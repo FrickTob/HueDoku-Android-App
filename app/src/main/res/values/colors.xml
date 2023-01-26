@@ -33,15 +33,15 @@
     <color name="sudokuAlt18">#8f00ff</color>
     <color name="sudokuAlt19">#f032e6</color>
 
-    <color name="sudokuAlt21"></color>
-    <color name="sudokuAlt22"></color>
-    <color name="sudokuAlt23"></color>
-    <color name="sudokuAlt24"></color>
-    <color name="sudokuAlt25"></color>
-    <color name="sudokuAlt26"></color>
-    <color name="sudokuAlt27"></color>
-    <color name="sudokuAlt28"></color>
-    <color name="sudokuAlt29"></color>
+    <color name="sudokuAlt21">#006400</color>
+    <color name="sudokuAlt22">#bc8f8f</color>
+    <color name="sudokuAlt23">#ff0000</color>
+    <color name="sudokuAlt24">#ffd700</color>
+    <color name="sudokuAlt25">#00ff00</color>
+    <color name="sudokuAlt26">#00ffff</color>
+    <color name="sudokuAlt27">#a020f0</color>
+    <color name="sudokuAlt28">#1e90ff</color>
+    <color name="sudokuAlt29">#ff1493</color>
 
 
 </resources>
