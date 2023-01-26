@@ -12,14 +12,15 @@
         android:id="@+id/customizePopupCloseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:src="@drawable/close"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentEnd="true"
+        android:contentDescription="@string/closeButtonContentDescription"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/customizePopupTitle"
         android:text="@string/customizePopupTitle"
         android:textColor="@color/black"
-        android:textSize="28dp"
+        android:textSize="28sp"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/customizePopupCloseButton"/>
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,7 +44,8 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:src="@drawable/defaultcolorpalette"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/defaultColorPaletteContentDescription"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -69,6 +71,7 @@
         android:layout_height="100dp"
         android:src="@drawable/altcolorpalette"
         android:layout_centerHorizontal="true"
+        android:contentDescription="@string/altColorPalette1ContentDescription"
         />
     <TextView
         android:layout_width="wrap_content"
@@ -97,7 +100,8 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/altcolorpalette2"
-                android:layout_centerHorizontal="true"/>
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/altColorPalette2ContentDescription"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
