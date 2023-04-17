@@ -1,4 +1,4 @@
-package com.app.hue_doku.generation;
+package com.hue_doku.generation;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -1,6 +1,7 @@
-package com.app.hue_doku;
+package com.hue_doku;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
@@ -17,10 +18,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.app.hue_doku.game.Cell;
-import com.app.hue_doku.view.custom.HuedokuBoardView;
-import com.app.hue_doku.viewmodel.HuedokuViewModel;
-import com.app.hue_doku.viewmodel.MyViewModelFactory;
+import com.app.hue_doku.R;
+import com.hue_doku.game.Cell;
+import com.hue_doku.view.custom.HuedokuBoardView;
+import com.hue_doku.viewmodel.HuedokuViewModel;
+import com.hue_doku.viewmodel.MyViewModelFactory;
 
 import java.util.HashSet;
 import java.util.Locale;
@@ -28,7 +30,7 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class GameActivity extends AppCompatActivity implements HuedokuBoardView.OnTouchListener , View.OnClickListener {
+public class GameActivity extends AppCompatActivity implements HuedokuBoardView.OnTouchListener, View.OnClickListener {
     private HuedokuViewModel viewModel;
     private final Button[] buttons = new Button[9];
     private ImageButton notesButton;
@@ -51,6 +53,8 @@ public class GameActivity extends AppCompatActivity implements HuedokuBoardView.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         // Find user selected color palette

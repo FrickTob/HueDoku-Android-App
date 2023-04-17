@@ -1,4 +1,4 @@
-package com.app.hue_doku.game;
+package com.hue_doku.game;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,8 +7,8 @@ import android.util.Pair;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.app.hue_doku.generation.GeneratingAlgorithm;
-import com.app.hue_doku.generation.TerminalPattern;
+import com.hue_doku.generation.GeneratingAlgorithm;
+import com.hue_doku.generation.TerminalPattern;
 
 import java.util.HashSet;
 

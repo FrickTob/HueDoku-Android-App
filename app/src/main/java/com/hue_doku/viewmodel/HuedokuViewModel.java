@@ -1,11 +1,13 @@
-package com.app.hue_doku.viewmodel;
+package com.hue_doku.viewmodel;
 
 import android.app.Application;
 import android.content.Context;
 
 import androidx.lifecycle.ViewModel;
 
-import com.app.hue_doku.game.HuedokuGame;
+import com.hue_doku.game.HuedokuGame;
+
+import java.io.Serializable;
 
 /**
  * ViewModel for the SudokuGame

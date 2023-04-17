@@ -1,4 +1,4 @@
-package com.app.hue_doku.game;
+package com.hue_doku.game;
 
 /**
  * Simulates a sudoku board of variable size

@@ -1,7 +1,9 @@
-package com.app.hue_doku;
+package com.hue_doku;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -16,11 +18,17 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
+import com.app.hue_doku.R;
+import com.hue_doku.viewmodel.HuedokuViewModel;
+import com.hue_doku.viewmodel.MyViewModelFactory;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         // Find dimensions of the screen running the app and change the layout accordingly
         DisplayMetrics displayMetrics = new DisplayMetrics();

@@ -1,4 +1,4 @@
-package com.app.hue_doku.viewmodel;
+package com.hue_doku.viewmodel;
 
 import android.app.Application;
 import android.content.Context;

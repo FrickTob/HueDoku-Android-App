@@ -1,4 +1,4 @@
-package com.app.hue_doku.view.custom;
+package com.hue_doku.view.custom;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.icu.util.Measure;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -15,7 +16,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.app.hue_doku.R;
-import com.app.hue_doku.game.Cell;
+import com.hue_doku.game.Cell;
 
 import java.util.HashSet;
 
@@ -117,8 +118,12 @@ public class HuedokuBoardView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int sizePixels = Math.min(widthMeasureSpec,heightMeasureSpec);
-        setMeasuredDimension(sizePixels,sizePixels);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        System.out.println("measure mode: " + MeasureSpec.getMode(widthMeasureSpec));
+        int sizePixels = Math.min(height,width);
+        sizePixels = (int) Math.min(sizePixels, height * .6);
+        setMeasuredDimension(sizePixels, sizePixels);
     }
 
     @Override

@@ -14,11 +14,11 @@
         android:theme="@style/Theme.HueDoku"
         tools:targetApi="31">
         <activity
-            android:name="com.app.hue_doku.GameActivity"
+            android:name="com.hue_doku.GameActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="com.app.hue_doku.MainActivity"
+            android:name="com.hue_doku.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>

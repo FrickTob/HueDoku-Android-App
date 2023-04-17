@@ -1,157 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".GameActivity">
+    android:layout_height="match_parent">
+
     <TextView
         android:id="@+id/difficultyTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@id/timerText"
-        android:textSize="32sp" />
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/timerText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
         android:text="@string/timeStartingText"
         android:textSize="24sp"
-        android:paddingStart="24dp"
-        android:paddingEnd="0dp"
-        android:layout_above="@id/sudokuBoard"
-        android:layout_alignStart="@id/sudokuBoard"/>
+        app:layout_constraintBottom_toTopOf="@+id/sudokuBoard"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/mistakesText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
+        android:layout_marginEnd="60dp"
         android:text="@string/mistakesStartingText"
-        android:paddingEnd="24dp"
-        android:paddingStart="0dp"
-        android:layout_above="@id/sudokuBoard"
-        android:layout_alignEnd="@id/sudokuBoard"/>
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/sudokuBoard"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.app.hue_doku.view.custom.HuedokuBoardView
+    <com.hue_doku.view.custom.HuedokuBoardView
         android:id="@+id/sudokuBoard"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/buttonsLayout"
-        />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/buttonsLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <GridLayout
         android:id="@+id/buttonsLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="8dp"
         android:columnCount="3"
         android:rowCount="4"
         android:useDefaultMargins="true"
-        android:layout_centerHorizontal="true">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/oneButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/sudokuDefault1"
-            android:contentDescription="@string/color1Description"
             android:layout_row="1"
-            android:layout_column="0" />
+            android:layout_column="0"
+            android:backgroundTint="@color/sudokuDefault1"
+            android:contentDescription="@string/color1Description" />
 
         <Button
             android:id="@+id/twoButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/sudokuDefault2"
-            android:contentDescription="@string/color2Description"
             android:layout_row="1"
-            android:layout_column="1"/>
+            android:layout_column="1"
+            android:backgroundTint="@color/sudokuDefault2"
+            android:contentDescription="@string/color2Description" />
 
         <Button
             android:id="@+id/threeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/sudokuDefault3"
-            android:contentDescription="@string/color3Description"
             android:layout_row="1"
-            android:layout_column="2"/>
+            android:layout_column="2"
+            android:backgroundTint="@color/sudokuDefault3"
+            android:contentDescription="@string/color3Description" />
 
         <Button
             android:id="@+id/fourButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/sudokuDefault4"
-            android:contentDescription="@string/color4Description"
             android:layout_row="2"
-            android:layout_column="0"/>
+            android:layout_column="0"
+            android:backgroundTint="@color/sudokuDefault4"
+            android:contentDescription="@string/color4Description" />
 
         <Button
             android:id="@+id/fiveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/sudokuDefault5"
-            android:contentDescription="@string/color5Description"
             android:layout_row="2"
-            android:layout_column="1"/>
+            android:layout_column="1"
+            android:backgroundTint="@color/sudokuDefault5"
+            android:contentDescription="@string/color5Description" />
 
         <Button
             android:id="@+id/sixButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/sudokuDefault6"
-            android:contentDescription="@string/color6Description"
             android:layout_row="2"
-            android:layout_column="2"/>
+            android:layout_column="2"
+            android:backgroundTint="@color/sudokuDefault6"
+            android:contentDescription="@string/color6Description" />
 
         <Button
             android:id="@+id/sevenButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/sudokuDefault7"
-            android:contentDescription="@string/color7Description"
             android:layout_row="3"
-            android:layout_column="0"/>
+            android:layout_column="0"
+            android:backgroundTint="@color/sudokuDefault7"
+            android:contentDescription="@string/color7Description" />
 
         <Button
             android:id="@+id/eightButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/sudokuDefault8"
-            android:contentDescription="@string/color8Description"
             android:layout_row="3"
-            android:layout_column="1"/>
+            android:layout_column="1"
+            android:backgroundTint="@color/sudokuDefault8"
+            android:contentDescription="@string/color8Description" />
 
         <Button
             android:id="@+id/nineButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/sudokuDefault9"
-            android:contentDescription="@string/color9Description"
             android:layout_row="3"
-            android:layout_column="2"/>
+            android:layout_column="2"
+            android:backgroundTint="@color/sudokuDefault9"
+            android:contentDescription="@string/color9Description" />
 
         <ImageButton
             android:id="@+id/notesButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/notesButtonDescription"
-            android:src="@drawable/notespen"
             android:layout_row="0"
-            android:minHeight="48dp"
             android:layout_column="0"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:contentDescription="@string/notesButtonDescription"
+            android:minHeight="48dp"
+            android:src="@drawable/notespen" />
 
         <ImageButton
             android:id="@+id/eraseButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/erase"
             android:layout_row="0"
-            android:minHeight="48dp"
             android:layout_column="2"
             android:layout_gravity="center"
-            android:contentDescription="@string/eraseButtonDescription"/>
+            android:contentDescription="@string/eraseButtonDescription"
+            android:minHeight="48dp"
+            android:src="@drawable/erase" />
     </GridLayout>
 
-</RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

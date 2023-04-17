@@ -1,4 +1,4 @@
-package com.app.hue_doku.game;
+package com.hue_doku.game;
 
 import java.util.HashSet;
 
